@@ -53,7 +53,7 @@
           <h1 class="header-title intro-title">
             Library <span class="text-yellow-500">Announcements</span>
           </h1>
-          <p class="header-sub">Manage and review all event, general, and news posts.</p>
+          <p class="header-sub">Manage and review all general and news announcements</p>
         </div>
 
         <!-- DROPDOWN NEW ANNOUNCEMENT -->
@@ -71,21 +71,14 @@
                     class="dropdown-item whitespace-nowrap"
                     @click="dropdownOpen = false"
                   >
-                    New General Announcement
-                  </RouterLink>
-                  <RouterLink
-                    to="/admin/announcement/event"
-                    class="dropdown-item whitespace-nowrap"
-                    @click="dropdownOpen = false"
-                  >
-                    New Event Announcement
+                    Create General Announcement
                   </RouterLink>
                   <RouterLink
                     to="/admin/announcement/news"
                     class="dropdown-item whitespace-nowrap"
                     @click="dropdownOpen = false"
                   >
-                    News
+                    Create News Announcement
                   </RouterLink>
                 </div>
               </transition>
@@ -106,7 +99,7 @@
             <p class="kpi-label">Total Posts</p>
             <p class="kpi-value">
               {{
-                eventAnnouncements.length + generalAnnouncements.length + newsAnnouncements.length
+                 generalAnnouncements.length + newsAnnouncements.length
               }}
             </p>
           </div>
@@ -121,92 +114,6 @@
         </div>
 
         <div class="stack-flow">
-          <article class="stack-panel">
-            <div class="panel-head">
-              <h2 class="panel-title">Event Announcements</h2>
-              <span class="panel-badge panel-badge-amber"
-                >{{ eventAnnouncements.length }} posts</span
-              >
-            </div>
-            <div v-if="eventAnnouncements.length === 0" class="empty-state">
-              No event announcements yet.
-            </div>
-            <div v-else class="stack-list">
-              <div
-                v-for="event in eventAnnouncements"
-                :key="event.id"
-                class="row-card row-card-clickable"
-                @click="openEventPreview(event)"
-              >
-                <div v-if="event.images" class="row-thumb-wrap" @click="openEventPreview(event)">
-                  <img :src="event.images" class="row-thumb" />
-                </div>
-                <div
-                  v-else
-                  class="row-thumb-wrap row-thumb-fallback"
-                  @click="openEventPreview(event)"
-                >
-                  EVENT
-                </div>
-                <div class="row-body" @click="openEventPreview(event)">
-                  <h3 class="row-title">{{ event.title }}</h3>
-                  <p class="row-text">{{ event.description }}</p>
-                  <div class="row-meta row-meta-split">
-                    <p><strong>Event Date:</strong> {{ formatDate(event.start_date) }}</p>
-                    <p v-if="event.time_start">
-                      <strong>Duration:</strong> {{ formatTime(event.time_start) }} —
-                      {{ formatTime(event.time_end) }}
-                    </p>
-                    <p><strong>Location:</strong> {{ event.location }}</p>
-                  </div>
-                </div>
-                <div class="row-actions">
-                  <RouterLink
-                    :to="`/admin/announcement/event?id=${event.id}`"
-                    class="icon-action"
-                    title="Edit Announcement"
-                    @click.stop
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      class="h-5 w-5"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                      />
-                    </svg>
-                  </RouterLink>
-                  <button
-                    @click.stop="deleteAnnouncement(event.id)"
-                    class="icon-action icon-action-danger"
-                    title="Delete Announcement"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      class="h-5 w-5"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                      />
-                    </svg>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </article>
-
           <article class="stack-panel">
             <div class="panel-head">
               <h2 class="panel-title">General Announcements</h2>
@@ -519,7 +426,6 @@ const thisWeekCount = computed(() => {
 
 const latestBatchCount = computed(() => {
   return (
-    Math.min(eventAnnouncements.value.length, 5) +
     Math.min(generalAnnouncements.value.length, 5) +
     Math.min(newsAnnouncements.value.length, 5)
   )
