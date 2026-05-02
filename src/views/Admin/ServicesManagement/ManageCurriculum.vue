@@ -46,14 +46,23 @@
         </article>
       </section>
 
-      <div class="flex justify-end">
+      <div class="flex justify-end gap-4">
         <button
           @click="$router.push('/admin/services/curriculum/edit')"
           class="rounded-lg bg-[#0d2b0f] px-8 py-3 mb-5 text-sm font-bold uppercase tracking-wide text-white transition hover:bg-[#1b5e20]"
         >
-          Go to Edit
+          Edit A Curriculum
+        </button>
+
+                <button
+          @click="$router.push('/admin/services/curriculum/add')"
+          class="rounded-lg bg-[#0d2b0f] px-8 py-3 mb-5 text-sm font-bold uppercase tracking-wide text-white transition hover:bg-[#1b5e20]"
+        >
+          Add A Curriculum
         </button>
       </div>
+
+
       <section class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <button
           v-for="college in colleges"

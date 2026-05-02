@@ -789,3 +789,253 @@ export const deleteCurriculum = async (id: string) => {
 
   return data
 }
+
+/**
+ * Fetch colleges with their IDs (for dropdown)
+ */
+export const getCollegesWithIds = async (): Promise<Array<{ id: string; code: string; name: string }>> => {
+  const { data, error } = await supabase
+    .from('colleges')
+    .select('id, code, name')
+    .order('code', { ascending: true })
+
+  if (error) {
+    console.error('Error fetching colleges:', error)
+    throw error
+  }
+
+  return (data as Array<{ id: string; code: string; name: string }> | null) ?? []
+}
+
+/**
+ * Fetch programs by college ID
+ */
+export const getProgramsByCollegeId = async (collegeId: string): Promise<Array<{ id: string; name: string; code?: string }>> => {
+  const { data, error } = await supabase
+    .from('programs')
+    .select('id, program_name, program_code')
+    .eq('college_id', collegeId)
+    .order('program_name', { ascending: true })
+
+  if (error) {
+    console.error('Error fetching programs:', error)
+    throw error
+  }
+
+  return ((data as Array<{ id: string; program_name: string; program_code?: string }> | null) ?? []).map((p) => ({
+    id: p.id,
+    name: p.program_name,
+    code: p.program_code,
+  }))
+}
+
+/**
+ * Create or get course by code
+ */
+export const getOrCreateCourse = async (courseCode: string, courseTitle: string): Promise<string> => {
+  if (courseCode.trim()) {
+    const { data: existing } = await supabase
+      .from('courses')
+      .select('id')
+      .eq('course_code', courseCode)
+      .maybeSingle()
+
+    if (existing) {
+      return existing.id
+    }
+  }
+
+  const { data, error } = await supabase
+    .from('courses')
+    .insert([{ course_code: courseCode || null, course_title: courseTitle }])
+    .select('id')
+    .single()
+
+  if (error) {
+    console.error('Error creating course:', error)
+    throw error
+  }
+
+  return data.id
+}
+
+/**
+ * Create curriculum requirement
+ */
+export const createCurriculumRequirement = async (
+  curriculumId: string,
+  name: string,
+  description?: string,
+  displayOrder?: number,
+): Promise<string> => {
+  const { data, error } = await supabase
+    .from('curriculum_requirements')
+    .insert([
+      {
+        curriculum_id: curriculumId,
+        name,
+        description: description || null,
+        display_order: displayOrder,
+      },
+    ])
+    .select('id')
+    .single()
+
+  if (error) {
+    console.error('Error creating requirement:', error)
+    throw error
+  }
+
+  return data.id
+}
+
+/**
+ * Update curriculum requirement
+ */
+export const updateCurriculumRequirement = async (
+  requirementId: string,
+  name: string,
+  description?: string,
+): Promise<void> => {
+  const { error } = await supabase
+    .from('curriculum_requirements')
+    .update({
+      name,
+      description: description || null,
+    })
+    .eq('id', requirementId)
+
+  if (error) {
+    console.error('Error updating requirement:', error)
+    throw error
+  }
+}
+
+/**
+ * Delete curriculum requirement (cascades to curriculum_courses)
+ */
+export const deleteCurriculumRequirement = async (requirementId: string): Promise<void> => {
+  const { error } = await supabase
+    .from('curriculum_requirements')
+    .delete()
+    .eq('id', requirementId)
+
+  if (error) {
+    console.error('Error deleting requirement:', error)
+    throw error
+  }
+}
+
+/**
+ * Create curriculum course (bridge table entry)
+ */
+export const createCurriculumCourse = async (
+  requirementId: string,
+  courseId: string,
+  displayOrder?: number,
+): Promise<string> => {
+  const { data, error } = await supabase
+    .from('curriculum_courses')
+    .insert([
+      {
+        requirement_id: requirementId,
+        course_id: courseId,
+        display_order: displayOrder,
+      },
+    ])
+    .select('id')
+    .single()
+
+  if (error) {
+    console.error('Error creating curriculum course:', error)
+    throw error
+  }
+
+  return data.id
+}
+
+/**
+ * Delete curriculum course (bridge table entry)
+ */
+export const deleteCurriculumCourse = async (curriculumCourseId: string): Promise<void> => {
+  const { error } = await supabase
+    .from('curriculum_courses')
+    .delete()
+    .eq('id', curriculumCourseId)
+
+  if (error) {
+    console.error('Error deleting curriculum course:', error)
+    throw error
+  }
+}
+
+/**
+ * Create study plan entry
+ */
+export const createStudyPlanEntry = async (
+  curriculumId: string,
+  courseId: string,
+  yearLevel: number,
+  semester: number,
+  displayOrder?: number,
+): Promise<string> => {
+  const { data, error } = await supabase
+    .from('program_study_plan')
+    .insert([
+      {
+        curriculum_id: curriculumId,
+        course_id: courseId,
+        year_level: yearLevel,
+        semester: semester,
+        display_order: displayOrder,
+      },
+    ])
+    .select('id')
+    .single()
+
+  if (error) {
+    console.error('Error creating study plan entry:', error)
+    throw error
+  }
+
+  return data.id
+}
+
+/**
+ * Update study plan entry
+ */
+export const updateStudyPlanEntry = async (
+  studyPlanId: string,
+  courseId: string,
+  yearLevel: number,
+  semester: number,
+): Promise<void> => {
+  const { error } = await supabase
+    .from('program_study_plan')
+    .update({
+      course_id: courseId,
+      year_level: yearLevel,
+      semester: semester,
+    })
+    .eq('id', studyPlanId)
+
+  if (error) {
+    console.error('Error updating study plan entry:', error)
+    throw error
+  }
+}
+
+/**
+ * Delete study plan entry
+ */
+export const deleteStudyPlanEntry = async (studyPlanId: string): Promise<void> => {
+  const { error } = await supabase
+    .from('program_study_plan')
+    .delete()
+    .eq('id', studyPlanId)
+
+  if (error) {
+    console.error('Error deleting study plan entry:', error)
+    throw error
+  }
+}
