@@ -38,7 +38,7 @@
       >
         <div class="flex items-center justify-between gap-4">
           <h2 class="text-xl font-bold uppercase tracking-wide text-[#164d23]">
-            Four-Year Degree Plan
+            {{ degreeTitle }}
           </h2>
           <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
             {{ semesterBlocks.length }} semesters
@@ -59,7 +59,7 @@
         <div v-else>
           <!-- Year Sections -->
           <div class="space-y-8">
-            <div v-for="yearNum in 4" :key="`year-${yearNum}`" class="space-y-4">
+            <div v-for="yearNum in maxYears" :key="`year-${yearNum}`" class="space-y-4">
               <!-- Year Header -->
               <div class="flex items-center gap-3 border-b-2 border-[#164d23]/20 pb-3">
                 <div
@@ -189,6 +189,7 @@ const {
   isLoading,
   errorMessage,
   studyPlans,
+  programLevel,
   fetchCurriculumData,
 } = useCurriculumData()
 
@@ -199,17 +200,6 @@ type SemesterBlock = {
   semester: number
   rows: ProgramStudyPlanRow[]
 }
-
-const semesterBlueprint: Array<Omit<SemesterBlock, 'rows'>> = [
-  { key: '1-1', label: 'FIRST YEAR, FIRST SEMESTER', year: 1, semester: 1 },
-  { key: '1-2', label: 'FIRST YEAR, SECOND SEMESTER', year: 1, semester: 2 },
-  { key: '2-1', label: 'SECOND YEAR, FIRST SEMESTER', year: 2, semester: 1 },
-  { key: '2-2', label: 'SECOND YEAR, SECOND SEMESTER', year: 2, semester: 2 },
-  { key: '3-1', label: 'THIRD YEAR, FIRST SEMESTER', year: 3, semester: 1 },
-  { key: '3-2', label: 'THIRD YEAR, SECOND SEMESTER', year: 3, semester: 2 },
-  { key: '4-1', label: 'FOURTH YEAR, FIRST SEMESTER', year: 4, semester: 1 },
-  { key: '4-2', label: 'FOURTH YEAR, SECOND SEMESTER', year: 4, semester: 2 },
-]
 
 const normalizeText = (value: string): string =>
   value
@@ -240,8 +230,36 @@ const matchesSemesterBlock = (
   )
 }
 
+// Determine max years based on program level
+const maxYears = computed(() => {
+  if (programLevel.value === 'graduate') {
+    // For graduate programs, check if there's plan_type data or default to 2 years
+    const hasThreeYearData = studyPlans.value.some(plan => plan.year_level === 3)
+    return hasThreeYearData ? 3 : 2
+  }
+  // Default to 4 years for undergraduate
+  return 4
+})
+
+// Generate semester blueprint dynamically
+const semesterBlueprint = computed<Array<Omit<SemesterBlock, 'rows'>>>(() => {
+  const blueprint: Array<Omit<SemesterBlock, 'rows'>> = []
+  for (let year = 1; year <= maxYears.value; year++) {
+    blueprint.push({ key: `${year}-1`, label: `YEAR ${year}, FIRST SEMESTER`, year, semester: 1 })
+    blueprint.push({ key: `${year}-2`, label: `YEAR ${year}, SECOND SEMESTER`, year, semester: 2 })
+  }
+  return blueprint
+})
+
+const degreeTitle = computed(() => {
+  if (programLevel.value === 'graduate') {
+    return maxYears.value === 3 ? 'Three-Year Degree Plan' : 'Two-Year Degree Plan'
+  }
+  return 'Four-Year Degree Plan'
+})
+
 const semesterBlocks = computed<SemesterBlock[]>(() => {
-  return semesterBlueprint.map((slot) => ({
+  return semesterBlueprint.value.map((slot) => ({
     ...slot,
     rows: studyPlans.value.filter((row) => matchesSemesterBlock(row, slot)),
   }))

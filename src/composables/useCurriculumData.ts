@@ -107,6 +107,7 @@ export const useCurriculumData = () => {
   const curriculumInfo = ref<CurriculumInfoPayload | null>(null)
   const curriculumDetail = ref<Awaited<ReturnType<typeof getCurriculumDetailByProgramId>>>(null)
   const studyPlans = ref<ProgramStudyPlanRow[]>([])
+  const programLevel = ref<'undergraduate' | 'graduate' | null>(null)
 
   const fetchCurriculumData = async (
     route: RouteLocationNormalizedLoaded,
@@ -127,6 +128,7 @@ export const useCurriculumData = () => {
       curriculumInfo.value = null
       curriculumDetail.value = null
       studyPlans.value = []
+      programLevel.value = null
 
       if (activeProgramId.value) {
         let resolvedProgramId = ''
@@ -146,6 +148,17 @@ export const useCurriculumData = () => {
           program_id: programData.id,
           program_name: programData.program_name,
           source: 'programs',
+        }
+
+        // Fetch program level
+        const { data: programDataWithLevel, error: levelError } = await supabase
+          .from('programs')
+          .select('level')
+          .eq('id', resolvedProgramId)
+          .maybeSingle()
+
+        if (!levelError && programDataWithLevel) {
+          programLevel.value = (programDataWithLevel.level as 'undergraduate' | 'graduate') || null
         }
 
         if (activeSpecializationId.value) {
@@ -256,6 +269,7 @@ export const useCurriculumData = () => {
     curriculumInfo,
     curriculumDetail,
     studyPlans,
+    programLevel,
     fetchCurriculumData,
   }
 }

@@ -225,7 +225,15 @@ const selectedCollege = computed(() => {
 const visibleCollegeCount = computed(() => colleges.value.length)
 
 const totalProgramCount = computed(() =>
-  colleges.value.reduce((sum, college) => sum + college.programs.length, 0),
+  colleges.value.reduce((sum, college) => {
+    const collegeCount = college.programs.reduce((programSum, program) => {
+      if (program.specializations.length > 0) {
+        return programSum + program.specializations.length
+      }
+      return programSum + 1
+    }, 0)
+    return sum + collegeCount
+  }, 0),
 )
 
 const openCollegeLabel = computed(() => selectedCollege.value?.code ?? 'None')

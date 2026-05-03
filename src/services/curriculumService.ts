@@ -608,9 +608,9 @@ export const getProgramStudyPlans = async (
   const curriculumQuery = programSpecializationId
     ? supabase
         .from('curricula')
-        .select('id')
+        .select('id, programs(level)')
         .eq('program_specialization_id', programSpecializationId)
-    : supabase.from('curricula').select('id').eq('program_id', programId)
+    : supabase.from('curricula').select('id, programs(level)').eq('program_id', programId)
 
   const { data: curriculumList, error: curriculumError } = await curriculumQuery
     .order('revision_year', { ascending: false })
@@ -640,6 +640,7 @@ export const getProgramStudyPlans = async (
       semester,
       display_order,
       type,
+      plan_type,
       courses(id, course_code, course_title)
     `)
     .eq('curriculum_id', curriculumData.id)
