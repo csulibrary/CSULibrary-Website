@@ -1,7 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/composables/useAuth';
-import { useRBACModal } from '@/composables/useRBACModal';
 
 import HomePage from '../views/HomePage.vue'
 import AboutPage from '../views/AboutPage.vue'
@@ -26,34 +24,15 @@ import Login from '@/views/Admin/Login.vue'
 import Signin from '@/views/Admin/Signin.vue'
 import AnnouncementOverview from '@/views/Admin/Announcements/AnnouncementOverview.vue'
 import GeneralInput from '@/views/Admin/Announcements/GeneralInput.vue'
-import EventInput from '@/views/Admin/Announcements/EventInput.vue'
 import NewsInput from '@/views/Admin/Announcements/NewsInput.vue'
 import PersonnelOverview from '@/views/Admin/PersonnelManagement/PersonnelOverview.vue'
-import RAOverview from '@/views/Admin/Reports&Analytics/RAOverview.vue'
-import ReportDisplay from '@/views/Admin/Reports&Analytics/ReportDisplay.vue'
-import ReportAddInput from '@/views/Admin/Reports&Analytics/ReportAddInput.vue'
-import ReportBooks from '@/views/Admin/Reports&Analytics/ReportBooks.vue'
-
-import AttendanceOverview from '@/views/Admin/AttendanceManagement/AttendanceOverview.vue'
-import AttendanceLogs from '@/views/Admin/AttendanceManagement/AttendanceLogs.vue'
-import ImportRecord from '@/views/Admin/AttendanceManagement/ImportRecord.vue'
-import ManualInsert from '@/views/Admin/AttendanceManagement/ManualInsert.vue'
-import AttendanceGeneral from '@/views/Admin/AttendanceManagement/AttendanceTabs/AttendanceGeneral.vue'
-import AttendanceRanking from '@/views/Admin/AttendanceManagement/AttendanceTabs/AttendanceRanking.vue'
-import AttendanceReport from '@/views/Admin/AttendanceManagement/AttendanceTabs/AttendanceReport.vue'
-import AttendanceSearch from '@/views/Admin/AttendanceManagement/AttendanceTabs/AttendanceSearch.vue'
-import SearchRecord from '@/views/Admin/AttendanceManagement/AttendanceTabs/SearchRecord.vue'
-import VisitorAttendance from '@/views/Admin/AttendanceManagement/AttendanceTabs/VisitorAttendance.vue'
-
 import ServicesOverview from '@/views/Admin/ServicesManagement/ServicesOverview.vue'
-import RoomReservation from '@/views/Admin/ServicesManagement/RoomReservation.vue'
 import ManageRecords from '@/views/Admin/ServicesManagement/ManageRecords.vue'
 import ManageGallery from '@/views/Admin/ServicesManagement/ManageGallery.vue'
 import ManageCurriculum from '@/views/Admin/ServicesManagement/ManageCurriculum.vue'
 import CurriculumInfo from '@/views/Admin/ServicesManagement/Curriculum/CurriculumInfo.vue'
-import CurriculumEdit from '@/views/Admin/ServicesManagement/Curriculum/CurriculumEdit.vue';
+import CurriculumEdit from '@/views/Admin/ServicesManagement/Curriculum/CurriculumEdit.vue'
 import ProgramStudy from '@/views/Admin/ServicesManagement/Curriculum/ProgramStudy.vue'
-import ManageBorrowing from '@/views/Admin/ServicesManagement/ManageBorrowing.vue'
 import WebsiteOverview from '@/views/Admin/WebsiteManagement/WebsiteOverview.vue'
 import WebsiteImages from '@/views/Admin/WebsiteManagement/WebsiteImages.vue'
 import WebsiteGeneral from '@/views/Admin/WebsiteManagement/WebsiteGeneral.vue'
@@ -61,15 +40,12 @@ import ManageAbout from '@/views/Admin/WebsiteManagement/ManageAbout.vue'
 import ManageServices from '@/views/Admin/WebsiteManagement/ManageServices.vue'
 import UsersManagement from '@/views/Admin/AdminManagement/UsersManagement.vue'
 import ActivateDeactivate from '@/views/Admin/AdminManagement/ActivateDeactivate.vue'
-import ManageAssignation from '@/views/Admin/AdminManagement/ManageAssignation.vue'
 import ManagePermission from '@/views/Admin/AdminManagement/ManagePermission.vue'
 import ManageRoles from '@/views/Admin/AdminManagement/ManageRoles.vue'
 import ViewUsers from '@/views/Admin/AdminManagement/ViewUsers.vue'
 import BackupSettings from '@/views/Admin/AdminManagement/BackupSettings.vue'
 import Developers from '@/views/Developers.vue'
-
-//report
-import ReportPage from '@/views/Admin/Attendance/Reports/ReportPage.vue';
+import CurriculumAdd from '@/views/Admin/ServicesManagement/Curriculum/CurriculumAdd.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.pBASE_URL),
@@ -97,48 +73,30 @@ const router = createRouter({
     { path: '/admin', name: 'admin', component: Dashboard, meta: { requiresAuth: true }   },
     { path: '/admin/login', name: 'login', component: Login },
     { path: '/admin/signin', name: 'signin', component: Signin },
-    { path: '/admin/announcement', name: 'announcement', component: AnnouncementOverview,   },
-    { path: '/admin/announcement/general', name: 'announcement-general', component: GeneralInput,   },
-    { path: '/admin/announcement/event', name: 'announcement-event', component: EventInput,   },
-    { path: '/admin/announcement/news', name: 'announcement-news', component: NewsInput,   },
-    { path: '/admin/personnel', name: 'admin-personnel', component: PersonnelOverview  },
-    { path: '/admin/analytics', name: 'analytics', component: RAOverview,   },
-    { path: '/admin/analytics/display', name: 'analytics-display', component: ReportDisplay,   },
-    { path: '/admin/analytics/add', name: 'analytics-add', component: ReportAddInput,   },
-    { path: '/admin/analytics/books', name: 'announcement-books', component: ReportBooks,   },
-    { path: '/admin/attendance', name: 'attendance', component: AttendanceOverview,   },
-    { path: '/admin/attendance/logs', name: 'attendance-logs', component: AttendanceLogs,   },
-    { path: '/admin/attendance/import', name: 'attendance-import', component: ImportRecord, meta: { requiresAdmin: true,requiresAuth: true  }   },
-    { path: '/admin/attendance/import/add', name: 'attendance-add', component: ManualInsert,   },
-    { path: '/admin/attendance/settings', name: 'attendance-settings', component: AttendanceGeneral, meta: { requiresAdmin: true,requiresAuth: true  }  },
-    { path: '/admin/attendance/report', name: 'attendance-report', component: ReportPage,   },
-    { path: '/admin/attendance/search', name: 'attendance-search', component: AttendanceSearch,   },
-    { path: '/admin/attendance/students', name: 'attendance-students', component: SearchRecord, meta: { requiresAdmin: true,requiresAuth: true  }  },
-    { path: '/admin/attendance/ranking', name: 'attendance-ranking', component: AttendanceRanking,   },
-    { path: '/admin/attendance/visitors', name: 'admin-attendance-visitors', component: VisitorAttendance  },
-    { path: '/admin/services', name: 'admin-services', component: ServicesOverview,   },
-    { path: '/admin/services/reservations', name: 'services-reservations', component: RoomReservation,   },
-    { path: '/admin/services/records', name: 'services-records', component: ManageRecords,   },
-    { path: '/admin/services/gallery', name: 'services-gallery', component: ManageGallery,   },
-    { path: '/admin/services/curriculum', name: 'services-curriculum', component: ManageCurriculum,   },
-  { path: '/admin/services/curriculum/curriculum-info', name: 'curriculum-info', component: CurriculumInfo,   },
-  { path: '/admin/curriculum/info/:programId/:specializationId?', name: 'curriculum-info-dynamic', component: CurriculumInfo,   },
-{ path: '/admin/services/curriculum/program-study/:programId/:specializationId?', name: 'program-study', component: ProgramStudy,   },
-{ path: '/admin/services/curriculum/edit', name: 'curriculum-edit', component: CurriculumEdit,   },
-    { path: '/admin/services/borrowing', name: 'services-borrowing', component: ManageBorrowing,   },
-    { path: '/admin/website', name: 'website', component: WebsiteOverview  },
-    { path: '/admin/website/images', name: 'website-images', component: WebsiteImages,   },
-    { path: '/admin/website/general', name: 'website-general', component: WebsiteGeneral,   }, 
-    { path: '/admin/website/about', name: 'website-about', component: ManageAbout,   }, 
-    { path: '/admin/website/services', name: 'website-services', component: ManageServices,   }, 
-    { path: '/admin/management', name: 'admin-management', component: UsersManagement  },
-    { path: '/admin/management/view-users', name: 'admin-management-view', component: ViewUsers,   },    
-    { path: '/admin/management/activation', name: 'admin-management-activation', component: ActivateDeactivate,   }, 
-    { path: '/admin/management/roles', name: 'admin-management-roles', component: ManageRoles,   }, 
-    { path: '/admin/management/assignation', name: 'admin-management-assignation', component: ManageAssignation,   }, 
-    { path: '/admin/management/permission', name: 'admin-management-permission', component: ManagePermission,   }, 
-    { path: '/admin/settings/backup', name: 'admin-settings-backup', component: BackupSettings }, 
-    { path: '/admin/attendance/report-test', name: 'attendance-report-test', component: ReportPage,  }, 
+    { path: '/admin/announcement', name: 'announcement', component: AnnouncementOverview,meta: { requiresAuth: true }   },
+    { path: '/admin/announcement/general', name: 'announcement-general', component: GeneralInput, meta: { requiresAuth: true }  },
+    { path: '/admin/announcement/news', name: 'announcement-news', component: NewsInput, meta: { requiresAuth: true }  },
+    { path: '/admin/personnel', name: 'admin-personnel', component: PersonnelOverview, meta: { requiresAuth: true } },
+    { path: '/admin/services', name: 'admin-services', component: ServicesOverview, meta: { requiresAuth: true } },
+    { path: '/admin/services/records', name: 'services-records', component: ManageRecords, meta: { requiresAuth: true }  },
+    { path: '/admin/services/gallery', name: 'services-gallery', component: ManageGallery, meta: { requiresAuth: true }  },
+    { path: '/admin/services/curriculum', name: 'services-curriculum', component: ManageCurriculum, meta: { requiresAuth: true }  },
+    { path: '/admin/services/curriculum/curriculum-info', name: 'curriculum-info', component: CurriculumInfo, meta: { requiresAuth: true }  },
+    { path: '/admin/curriculum/info/:programId/:specializationId?', name: 'curriculum-info-dynamic', component: CurriculumInfo, meta: { requiresAuth: true }  },
+    { path: '/admin/services/curriculum/program-study/:programId/:specializationId?', name: 'program-study', component: ProgramStudy,meta: { requiresAuth: true }   },
+    { path: '/admin/services/curriculum/edit', name: 'curriculum-edit', component: CurriculumEdit, meta: { requiresAuth: true }   },
+    { path: '/admin/services/curriculum/add', name: 'curriculum-add', component: CurriculumAdd, meta: { requiresAuth: true }   },
+    { path: '/admin/website', name: 'website', component: WebsiteOverview, meta: { requiresAuth: true } },
+    { path: '/admin/website/images', name: 'website-images', component: WebsiteImages, meta: { requiresAuth: true }  },
+    { path: '/admin/website/general', name: 'website-general', component: WebsiteGeneral, meta: { requiresAuth: true }   }, 
+    { path: '/admin/website/about', name: 'website-about', component: ManageAbout, meta: { requiresAuth: true }  }, 
+    { path: '/admin/website/services', name: 'website-services', component: ManageServices, meta: { requiresAuth: true }  }, 
+    { path: '/admin/management', name: 'admin-management', component: UsersManagement,meta: { requiresAdmin: true, requiresAuth: true  } },
+    { path: '/admin/management/view-users', name: 'admin-management-view', component: ViewUsers, meta: { requiresAuth: true }  },    
+    { path: '/admin/management/activation', name: 'admin-management-activation', component: ActivateDeactivate, meta: { requiresAuth: true }  }, 
+    { path: '/admin/management/roles', name: 'admin-management-roles', component: ManageRoles, meta: { requiresAuth: true }  },  
+    { path: '/admin/management/permission', name: 'admin-management-permission', component: ManagePermission, meta: { requiresAuth: true }  }, 
+    { path: '/admin/settings/backup', name: 'admin-settings-backup', component: BackupSettings,meta: { requiresAuth: true } }, 
   ],
    scrollBehavior(to, from, savedPosition) {
     if (savedPosition) {
@@ -159,17 +117,17 @@ router.beforeEach(async (to) => {
   const requiresAuth = to.meta.requiresAuth
   const requiresAdmin = to.meta.requiresAdmin
 
-  // ✅ Not logged in
+  // Not logged in
   if (requiresAuth && !session) {
     return '/admin/login'
   }
 
-  // ✅ Prevent going back to login
+  // Prevent going back to login
   if ((to.path === '/admin/login' || to.path === '/admin/signin') && session) {
     return '/admin'
   }
 
-  // ✅ RBAC (no infinite loop)
+  // RBAC (no infinite loop)
   if (requiresAdmin) {
     const isAdmin = profile?.role === 'admin'
 
@@ -181,7 +139,7 @@ router.beforeEach(async (to) => {
     }
   }
 
-  // ✅ allow navigation
+  // allow navigation
   return true
 })
 

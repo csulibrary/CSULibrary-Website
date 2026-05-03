@@ -6,20 +6,12 @@ export const BACKUP_TABLES = [
   'users',
   'announcements',
   'events',
-  'students',
-  'attendance_logs',
-  'attendance_logs_visitors',
-  'export_batches',
-  'attendance_page',
   'public_records',
   'website_services',
   'website_images',
   'about',
   'gallery_sections',
   'gallery_images',
-  'rooms',
-  'room_reservations',
-  'room_reservation_participants',
   'colleges',
   'programs',
   'curricula',
@@ -152,10 +144,14 @@ export function useBackup() {
     let nextIndex = 0
 
     const workers = Array.from({ length: Math.min(limit, tasks.length) }, async () => {
-      while (nextIndex < tasks.length) {
+      while (true) {
         const index = nextIndex
+        if (index >= tasks.length) break
         nextIndex += 1
-        await tasks[index]()
+
+        const task = tasks[index]
+        if (!task) break
+        await task()
       }
     })
 
