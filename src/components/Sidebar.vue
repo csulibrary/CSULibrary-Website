@@ -110,7 +110,7 @@
 
         <transition name="fade-fast">
           <div v-if="!isCollapsed" class="overflow-hidden text-white uppercase">
-            <p class="text-[10px] font-black tracking-tight"> {{ role || 'User' }}</p>
+            <p class="text-[10px] font-black tracking-tight">{{ role || 'User' }}</p>
             <p class="text-[9px] text-[#f9a825] font-bold italic opacity-90">Session Active</p>
           </div>
         </transition>
@@ -128,7 +128,9 @@ const firstName = ref('')
 const role = ref('')
 
 onMounted(async () => {
-  const { data: { user } } = await supabase.auth.getUser()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
 
   if (user) {
     const { data, error } = await supabase
@@ -236,7 +238,7 @@ const menuItems = [
     </svg>`,
   },
 
-    {
+  {
     name: 'PERSONNEL',
     label: 'Admin',
     route: '/admin/management',
