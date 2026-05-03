@@ -353,17 +353,6 @@ import { computed, reactive, ref, onMounted, onBeforeUnmount } from 'vue'
 import Sidebar from '@/components/Sidebar.vue'
 import { supabase } from '@/lib/supabase'
 
-interface EventAnnouncement {
-  id: number
-  title: string
-  description: string
-  start_date: string
-  location: string
-  type: string
-  images: string
-  time_start: string | null
-  time_end: string | null
-}
 
 interface GeneralAnnouncement {
   id: string
@@ -385,7 +374,6 @@ type PreviewItem = {
   badgeStyle: Record<string, string>
 }
 
-const eventAnnouncements = ref<EventAnnouncement[]>([])
 const generalAnnouncements = ref<GeneralAnnouncement[]>([])
 const newsAnnouncements = ref<GeneralAnnouncement[]>([])
 const isLoading = ref(true)
@@ -418,7 +406,6 @@ const thisWeekCount = computed(() => {
   }
 
   return [
-    ...eventAnnouncements.value.map((item) => item.start_date),
     ...generalAnnouncements.value.map((item) => item.created_at),
     ...newsAnnouncements.value.map((item) => item.created_at),
   ].filter((value) => isWithinWeek(value)).length
@@ -527,13 +514,8 @@ const confirmDelete = async () => {
 const fetchAnnouncements = async () => {
   try {
     isLoading.value = true
-    const [eventsResult, generalResult, newsResult] = await Promise.all([
+    const [ generalResult, newsResult] = await Promise.all([
       // AFTER
-      supabase
-        .from('events')
-        .select('*')
-        .eq('type', 'event')
-        .order('created_at', { ascending: false }),
       supabase
         .from('announcements')
         .select('id, title, content, type, image_url, created_at')
@@ -546,11 +528,9 @@ const fetchAnnouncements = async () => {
         .order('created_at', { ascending: false }),
     ])
 
-    if (eventsResult.error) throw eventsResult.error
     if (generalResult.error) throw generalResult.error
     if (newsResult.error) throw newsResult.error
 
-    eventAnnouncements.value = eventsResult.data || []
     generalAnnouncements.value = generalResult.data || []
     newsAnnouncements.value = newsResult.data || []
   } catch (error) {
@@ -560,22 +540,6 @@ const fetchAnnouncements = async () => {
   }
 }
 
-// --- DELETE ANNOUNCEMENT ---
-const deleteAnnouncement = async (id: number) => {
-  requestDelete('Are you sure you want to delete this announcement?', async () => {
-    try {
-      const { error } = await supabase.from('events').delete().eq('id', id)
-      if (error) throw error
-
-      eventAnnouncements.value = eventAnnouncements.value.filter((item) => item.id !== id)
-      showToast('Announcement deleted successfully')
-    } catch (error) {
-      const message = getErrorMessage(error)
-      console.error('Error deleting:', error)
-      showToast(`Error: ${message}`, 'error')
-    }
-  })
-}
 
 const deleteGeneralAnnouncement = async (id: string) => {
   requestDelete('Are you sure you want to delete this general announcement?', async () => {
@@ -649,21 +613,6 @@ function scrollToTop() {
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
-function openEventPreview(event: EventAnnouncement) {
-  activePreview.value = {
-    title: event.title,
-    content: event.description,
-    imageUrl: event.images || null,
-    metaLabel: 'Event Date',
-    metaDate: event.start_date,
-    location: event.location,
-    badgeLabel: 'Event',
-    badgeStyle: {
-      backgroundColor: '#fff5e5',
-      color: '#9a4b00',
-    },
-  }
-}
 
 function openGeneralPreview(announcement: GeneralAnnouncement) {
   activePreview.value = {
