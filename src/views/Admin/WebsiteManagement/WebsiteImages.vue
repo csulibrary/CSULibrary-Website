@@ -18,7 +18,6 @@ import photo4 from '@/assets/images/img2.jpg'
 import photo5 from '@/assets/images/img3.jpg'
 import designBg from '@/assets/images/design.png'
 
-import tinay from '@/assets/images/tinay.jpg'
 import eden from '@/assets/images/eden.jpg'
 
 import card1 from '@/assets/images/card1.jpg'
@@ -89,8 +88,6 @@ const assetUrlMap: Record<string, string> = {
   '/src/assets/images/img2.jpg': photo4,
   '/src/assets/images/img3.jpg': photo5,
   '/src/assets/images/design.png': designBg,
-  '/src/assets/images/tinay.jpg': tinay,
-  '/src/assets/images/tinay.JPG': tinay,
   '/src/assets/images/eden.jpg': eden,
   '/src/assets/images/card1.jpg': card1,
   '/src/assets/images/card2.jpg': card2,
