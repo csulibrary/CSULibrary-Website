@@ -28,6 +28,8 @@ function resolveMediaUrl(url?: string | null): string {
   return url
 }
 
+//helo
+
 type MediaType = 'image' | 'video'
 type PageType = 'homepage' | 'aboutpage'
 type ModalMode = 'alert' | 'confirm'
