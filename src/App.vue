@@ -48,6 +48,7 @@ const handleConfirm = () => {
   </div>
 </template>
 
+<!-- style -->
 <style>
 body {
   margin: 0;
