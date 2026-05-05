@@ -1958,23 +1958,38 @@ import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { getImagesByPage } from '@/services/websiteImageService'
 import { supabase } from '@/lib/supabase'
 
-import photo1 from '@/assets/images/img.jpg'
-import photo2 from '@/assets/images/lib.jpg'
-import photo3 from '@/assets/images/img1.jpg'
-import photo4 from '@/assets/images/img2.jpg'
-import photo5 from '@/assets/images/img3.jpg'
-import designBg from '@/assets/images/design.png'
-import card1 from '@/assets/images/card1.jpg'
-import card2 from '@/assets/images/card2.jpg'
-import card3 from '@/assets/images/card3.png'
-import reservation from '@/assets/images/reservation.jpg'
-import topImg from '@/assets/images/top.jpg'
-import newlyAcquiredBooks from '@/assets/images/newly_acc_books.png'
-import eLib from '@/assets/images/e-lib.jpg'
-import opac from '@/assets/images/opac.png'
-import freeJournals from '@/assets/images/free.jpg'
-import gale from '@/assets/images/gale.jpg'
-import ebsco from '@/assets/images/EBSCO.jpg'
+const assetModules = import.meta.glob('/src/assets/**/*.{jpg,jpeg,png,gif,webp,svg}', {
+  eager: true,
+  import: 'default',
+}) as unknown as Record<string, string>
+
+function resolveAsset(path: string): string {
+  if (assetModules[path]) return assetModules[path]
+  const normalized = path.startsWith('/src/') ? path : `/src/assets/${path.replace(/^\/?(src\/assets\/|assets\/)/, '')}`
+  if (assetModules[normalized]) return assetModules[normalized]
+  const lower = normalized.toLowerCase()
+  const found = Object.keys(assetModules).find(k => k.toLowerCase() === lower)
+  return found ? assetModules[found]! : path
+}
+
+// Then define your fallbacks using resolveAsset:
+const photo1 = resolveAsset('/src/assets/images/img.jpg')
+const photo2 = resolveAsset('/src/assets/images/lib.jpg')
+const photo3 = resolveAsset('/src/assets/images/img1.jpg')
+const photo4 = resolveAsset('/src/assets/images/img2.jpg')
+const photo5 = resolveAsset('/src/assets/images/img3.jpg')
+const designBg = resolveAsset('/src/assets/images/design.png')
+const card1 = resolveAsset('/src/assets/images/card1.jpg')
+const card2 = resolveAsset('/src/assets/images/card2.jpg')
+const card3 = resolveAsset('/src/assets/images/card3.png')
+const reservation = resolveAsset('/src/assets/images/reservation.jpg')
+const topImg = resolveAsset('/src/assets/images/top.jpg')
+const newlyAcquiredBooks = resolveAsset('/src/assets/images/newly_acc_books.png')
+const eLib = resolveAsset('/src/assets/images/e-lib.jpg')
+const opac = resolveAsset('/src/assets/images/opac.png')
+const freeJournals = resolveAsset('/src/assets/images/free.jpg')
+const gale = resolveAsset('/src/assets/images/gale.jpg')
+const ebsco = resolveAsset('/src/assets/images/EBSCO.jpg')
 
 type MediaType = 'image' | 'video'
 type PageType = 'homepage' | 'aboutpage'
