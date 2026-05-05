@@ -11,30 +11,24 @@ import {
   uploadWebsiteImage,
 } from '@/services/websiteImageService'
 
-import photo1 from '@/assets/images/img.jpg'
-import photo2 from '@/assets/images/lib.jpg'
-import photo3 from '@/assets/images/img1.jpg'
-import photo4 from '@/assets/images/img2.jpg'
-import photo5 from '@/assets/images/img3.jpg'
-import designBg from '@/assets/images/design.png'
+const assetModules = import.meta.glob(
+  '/src/assets/**/*.{jpg,jpeg,png,gif,webp,svg,png}',
+  { eager: true, import: 'default' }
+) as Record<string, string>
 
-import tinay from '@/assets/images/tinay.jpg'
-import eden from '@/assets/images/eden.jpg'
+function resolveMediaUrl(url?: string | null): string {
+  if (!url) return ''
+  if (
+    url.startsWith('http://') ||
+    url.startsWith('https://') ||
+    url.startsWith('data:') ||
+    url.startsWith('blob:')
+  ) return url
+  if (assetModules[url]) return assetModules[url]
+  return url
+}
 
-import card1 from '@/assets/images/card1.jpg'
-import card2 from '@/assets/images/card2.jpg'
-import card3 from '@/assets/images/card3.png'
-import reservation from '@/assets/images/reservation.jpg'
-import topImg from '@/assets/images/top.jpg'
-import newlyAcquiredBooks from '@/assets/images/newly_acc_books.png'
-
-import eLib from '@/assets/images/e-lib.jpg'
-import opac from '@/assets/images/opac.png'
-import freeJournals from '@/assets/images/free.jpg'
-import gale from '@/assets/images/gale.jpg'
-import ebsco from '@/assets/images/EBSCO.jpg'
-
-const heroSrc = new URL('@/assets/csu.jpg', import.meta.url).href
+//helo
 
 type MediaType = 'image' | 'video'
 type PageType = 'homepage' | 'aboutpage'
@@ -82,43 +76,7 @@ const sectionOrderLimits: Record<string, number> = {
   icons: 4,
 }
 
-const assetUrlMap: Record<string, string> = {
-  '/src/assets/images/img.jpg': photo1,
-  '/src/assets/images/lib.jpg': photo2,
-  '/src/assets/images/img1.jpg': photo3,
-  '/src/assets/images/img2.jpg': photo4,
-  '/src/assets/images/img3.jpg': photo5,
-  '/src/assets/images/design.png': designBg,
-  '/src/assets/images/tinay.jpg': tinay,
-  '/src/assets/images/tinay.JPG': tinay,
-  '/src/assets/images/eden.jpg': eden,
-  '/src/assets/images/card1.jpg': card1,
-  '/src/assets/images/card2.jpg': card2,
-  '/src/assets/images/card3.png': card3,
-  '/src/assets/images/reservation.jpg': reservation,
-  '/src/assets/images/top.jpg': topImg,
-  '/src/assets/images/newly_acc_books.png': newlyAcquiredBooks,
-  '/src/assets/images/e-lib.jpg': eLib,
-  '/src/assets/images/opac.png': opac,
-  '/src/assets/images/free.jpg': freeJournals,
-  '/src/assets/images/gale.jpg': gale,
-  '/src/assets/images/EBSCO.jpg': ebsco,
-  '/src/assets/csu.jpg': heroSrc,
-  '/csu-logo.png': '/csu-logo.png',
-}
 
-function resolveMediaUrl(url?: string | null) {
-  if (!url) return ''
-  if (assetUrlMap[url]) return assetUrlMap[url]
-  if (
-    url.startsWith('http://') ||
-    url.startsWith('https://') ||
-    url.startsWith('data:') ||
-    url.startsWith('blob:')
-  ) return url
-  if (url.startsWith('/')) return url
-  return url
-}
 
 function extractYouTubeId(url: string) {
   if (!url) return ''

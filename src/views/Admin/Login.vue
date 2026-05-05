@@ -132,6 +132,33 @@
             </RouterLink>
           </p>
         </div>
+
+<div class="mt-8 text-center">
+  <p class="text-white/60 text-sm">
+    Go To
+    <a
+      href="https://hlc-attendance-admin.vercel.app/"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="text-[#00bf63] font-black hover:underline transition-colors duration-200"
+    >
+    Attendance Admin
+    </a>
+  </p>
+</div>
+<div class="mt-8 text-center">
+  <p class="text-white/60 text-sm">
+    Go To
+    <a
+      href="https://hlc-scan2026.vercel.app/"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="text-[#00bf63] font-black hover:underline transition-colors duration-200"
+    >
+    Attendance Scanner
+    </a>
+  </p>
+</div>
       </div>
     </div>
   </div>

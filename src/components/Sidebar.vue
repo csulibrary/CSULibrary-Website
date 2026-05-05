@@ -110,7 +110,7 @@
 
         <transition name="fade-fast">
           <div v-if="!isCollapsed" class="overflow-hidden text-white uppercase">
-            <p class="text-[10px] font-black tracking-tight"> {{ role || 'User' }}</p>
+            <p class="text-[10px] font-black tracking-tight">{{ role || 'User' }}</p>
             <p class="text-[9px] text-[#f9a825] font-bold italic opacity-90">Session Active</p>
           </div>
         </transition>
@@ -128,7 +128,9 @@ const firstName = ref('')
 const role = ref('')
 
 onMounted(async () => {
-  const { data: { user } } = await supabase.auth.getUser()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
 
   if (user) {
     const { data, error } = await supabase
@@ -181,16 +183,16 @@ const menuItems = [
     </svg>`,
   },
 
-    {
-    name: 'ATTENDANCE',
-    label: 'Attendance',
-    route: '/admin/attendance',
-    icon: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-      <circle cx="9" cy="7" r="4"/>
-      <polyline points="16 11 18 13 22 9"/>
-    </svg>`,
-  },
+  //   {
+  //   name: 'ATTENDANCE',
+  //   label: 'Attendance',
+  //   route: '/admin/attendance',
+  //   icon: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  //     <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+  //     <circle cx="9" cy="7" r="4"/>
+  //     <polyline points="16 11 18 13 22 9"/>
+  //   </svg>`,
+  // },
 
   //BIBLIOMETRICS(OPTIONAL)
   // {
@@ -236,7 +238,7 @@ const menuItems = [
     </svg>`,
   },
 
-    {
+  {
     name: 'PERSONNEL',
     label: 'Admin',
     route: '/admin/management',
