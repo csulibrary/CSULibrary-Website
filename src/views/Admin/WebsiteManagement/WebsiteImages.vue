@@ -11,24 +11,31 @@ import {
   uploadWebsiteImage,
 } from '@/services/websiteImageService'
 
-const assetModules = import.meta.glob(
-  '/src/assets/**/*.{jpg,jpeg,png,gif,webp,svg,png}',
-  { eager: true, import: 'default' }
-) as Record<string, string>
+import photo1 from '@/assets/images/img.jpg'
+import photo2 from '@/assets/images/lib.jpg'
+import photo3 from '@/assets/images/img1.jpg'
+import photo4 from '@/assets/images/img2.jpg'
+import photo5 from '@/assets/images/img3.jpg'
+import designBg from '@/assets/images/design.png'
 
-function resolveMediaUrl(url?: string | null): string {
-  if (!url) return ''
-  if (
-    url.startsWith('http://') ||
-    url.startsWith('https://') ||
-    url.startsWith('data:') ||
-    url.startsWith('blob:')
-  ) return url
-  if (assetModules[url]) return assetModules[url]
-  return url
-}
+import tinay from '@/assets/images/tinay.jpg'
+import eden from '@/assets/images/eden.jpg'
 
-//helo
+import card1 from '@/assets/images/card1.jpg'
+import card2 from '@/assets/images/card2.jpg'
+import card3 from '@/assets/images/card3.png'
+import reservation from '@/assets/images/reservation.jpg'
+import topImg from '@/assets/images/top.jpg'
+import newlyAcquiredBooks from '@/assets/images/newly_acc_books.png'
+
+import eLib from '@/assets/images/e-lib.jpg'
+import opac from '@/assets/images/opac.png'
+import freeJournals from '@/assets/images/free.jpg'
+import gale from '@/assets/images/gale.jpg'
+import ebsco from '@/assets/images/EBSCO.jpg'
+
+const heroSrc = new URL('@/assets/csu.jpg', import.meta.url).href
+
 
 type MediaType = 'image' | 'video'
 type PageType = 'homepage' | 'aboutpage'
@@ -51,7 +58,10 @@ type MediaItem = {
 
 const homepageSections = [
   { value: 'carousel', label: 'Carousel' },
+  { value: 'library-section', label: 'Library Section' },
   { value: 'read-learn-discover', label: 'Read Learn Discover' },
+  { value: 'library-updates', label: 'Library Updates' },
+  { value: 'useful-links', label: 'Useful Links' },
   { value: 'features', label: 'Features' },
 ]
 
@@ -62,21 +72,48 @@ const aboutpageSections = [
 
 const createAllowedHomepageSections = [
   { value: 'carousel', label: 'Carousel' },
-  { value: 'read-learn-discover', label: 'Read Learn Discover' },
   { value: 'features', label: 'Features' },
 ]
 
 const createAllowedAboutpageSections = [{ value: 'icons', label: 'Icons' }]
 
-const sectionOrderLimits: Record<string, number> = {
-  carousel: 10,
-  'read-learn-discover': 3,
-  features: 10,
-  hero: 1,
-  icons: 4,
+const assetUrlMap: Record<string, string> = {
+  '/src/assets/images/img.jpg': photo1,
+  '/src/assets/images/lib.jpg': photo2,
+  '/src/assets/images/img1.jpg': photo3,
+  '/src/assets/images/img2.jpg': photo4,
+  '/src/assets/images/img3.jpg': photo5,
+  '/src/assets/images/design.png': designBg,
+  '/src/assets/images/tinay.jpg': tinay,
+  '/src/assets/images/tinay.JPG': tinay,
+  '/src/assets/images/eden.jpg': eden,
+  '/src/assets/images/card1.jpg': card1,
+  '/src/assets/images/card2.jpg': card2,
+  '/src/assets/images/card3.png': card3,
+  '/src/assets/images/reservation.jpg': reservation,
+  '/src/assets/images/top.jpg': topImg,
+  '/src/assets/images/newly_acc_books.png': newlyAcquiredBooks,
+  '/src/assets/images/e-lib.jpg': eLib,
+  '/src/assets/images/opac.png': opac,
+  '/src/assets/images/free.jpg': freeJournals,
+  '/src/assets/images/gale.jpg': gale,
+  '/src/assets/images/EBSCO.jpg': ebsco,
+  '/src/assets/csu.jpg': heroSrc,
+  '/csu-logo.png': '/csu-logo.png',
 }
 
-
+function resolveMediaUrl(url?: string | null) {
+  if (!url) return ''
+  if (assetUrlMap[url]) return assetUrlMap[url]
+  if (
+    url.startsWith('http://') ||
+    url.startsWith('https://') ||
+    url.startsWith('data:') ||
+    url.startsWith('blob:')
+  ) return url
+  if (url.startsWith('/')) return url
+  return url
+}
 
 function extractYouTubeId(url: string) {
   if (!url) return ''
@@ -114,14 +151,6 @@ function getDefaultCategory(page: PageType, section: string) {
     section
 
   return `${page === 'homepage' ? 'HomePage' : 'AboutPage'} ${sectionLabel}`
-}
-
-function getSectionLimit(section: string) {
-  return sectionOrderLimits[section] ?? 999
-}
-
-function getSectionLabel(section: string) {
-  return [...homepageSections, ...aboutpageSections].find((item) => item.value === section)?.label ?? section
 }
 
 function getVideoSource(item: Partial<MediaItem>) {
@@ -312,12 +341,8 @@ async function handleNoticeConfirm() {
 
 function getNextOrder(page: PageType, section: string) {
   const sectionItems = items.value.filter((item) => item.page === page && item.section === section)
-  const limit = getSectionLimit(section)
-
   if (!sectionItems.length) return 1
-
-  const nextOrder = Math.max(...sectionItems.map((item) => Number(item.order) || 0)) + 1
-  return Math.min(nextOrder, limit)
+  return Math.max(...sectionItems.map((item) => Number(item.order) || 0)) + 1
 }
 
 function normalizeTypeForSection() {
@@ -359,14 +384,7 @@ function handlePageChange() {
 }
 
 function handleSectionChange() {
-  const limit = getSectionLimit(form.value.section)
-
-  if (!form.value.id) {
-    form.value.order = getNextOrder(form.value.page, form.value.section)
-  } else {
-    form.value.order = Math.min(Number(form.value.order) || 1, limit)
-  }
-
+  if (!form.value.id) form.value.order = getNextOrder(form.value.page, form.value.section)
   form.value.category = getDefaultCategory(form.value.page, form.value.section)
   normalizeTypeForSection()
 }
@@ -420,11 +438,9 @@ function validateForm(payload: MediaItem) {
   if (
     mode.value === 'create' &&
     payload.page === 'homepage' &&
-    !['carousel', 'read-learn-discover', 'features'].includes(payload.section)
+    !['carousel', 'features'].includes(payload.section)
   ) {
-    openAlert(
-      'New media for HomePage can only be added inside Carousel, Read Learn Discover, or Features.',
-    )
+    openAlert('New media for HomePage can only be added inside Carousel or Features.')
     return false
   }
   if (mode.value === 'create' && payload.page === 'aboutpage' && payload.section !== 'icons') {
@@ -445,14 +461,6 @@ function validateForm(payload: MediaItem) {
   }
   if (!payload.order || Number(payload.order) < 1) {
     openAlert('Please provide a valid Order number.')
-    return false
-  }
-
-  const sectionLimit = getSectionLimit(payload.section)
-  if (Number(payload.order) > sectionLimit) {
-    openAlert(
-      `Only ${sectionLimit} item${sectionLimit > 1 ? 's' : ''} are allowed for ${getSectionLabel(payload.section)}.`,
-    )
     return false
   }
 
@@ -501,8 +509,6 @@ async function saveItem() {
     order: Number(form.value.order) || 1,
     category: getDefaultCategory(form.value.page, form.value.section),
   }
-
-  payload.order = Math.min(payload.order, getSectionLimit(payload.section))
 
   if (!validateForm(payload)) return false
 
@@ -931,13 +937,7 @@ const totalVideos = computed(() => items.value.filter((item) => item.type === 'v
 
               <div class="wm-field">
                 <label>Order</label>
-                <input
-  v-model.number="form.order"
-  class="wm-input"
-  type="number"
-  min="1"
-  :max="getSectionLimit(form.section)"
-/>
+                <input v-model.number="form.order" class="wm-input" type="number" min="1" />
               </div>
             </div>
 
@@ -1079,7 +1079,7 @@ const totalVideos = computed(() => items.value.filter((item) => item.type === 'v
   min-height: 100vh;
   width: 100%;
   overflow-y: auto;
-  background-color: var(--color-gray-50);
+  background: #f5f3ef;
   padding: 28px 28px 24px;
   box-sizing: border-box;
 }
@@ -1132,7 +1132,7 @@ const totalVideos = computed(() => items.value.filter((item) => item.type === 'v
 .wm-subtitle {
   color: #5f7566;
   margin: 14px 0 0;
-  font-size: 0.90rem;
+  font-size: clamp(1rem, 1.5vw, 1.1rem);
   line-height: 1.45;
   max-width: 980px;
 }
