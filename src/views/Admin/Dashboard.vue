@@ -215,7 +215,11 @@ function getPHDateRangeForToday() {
 }
 
 function getPHDateRangeForCurrentMonth() {
-  const { year, month } = getPHDateParts()
+  const parts = getPHDateParts()
+
+  const year = parts.year ?? new Date().getFullYear()
+  const month = parts.month ?? new Date().getMonth() + 1
+
   const lastDay = new Date(year, month, 0).getDate()
 
   return {
