@@ -1,24 +1,24 @@
 <template>
-  <div class="w-full">
+  <div class="homepage-root w-full max-w-full overflow-x-hidden">
     <!-- CAROUSEL -->
-    <div v-if="isMediaLoaded && carouselItems.length" class="relative w-full overflow-hidden">
+    <div v-if="isMediaLoaded && carouselItems.length" class="relative w-full max-w-full overflow-hidden">
       <div
         class="flex transition-transform duration-700 ease-in-out"
         :style="{ transform: `translateX(-${currentIndex * slideWidth}%)` }"
       >
-        <div v-for="(media, index) in carouselItems" :key="media.id || index" class="min-w-[100%]">
+        <div v-for="(media, index) in carouselItems" :key="media.id || index" class="min-w-full max-w-full">
           <img
             v-if="media.type === 'image'"
             :src="media.src"
             :alt="media.alt"
-            class="w-full object-cover"
+            class="w-full max-w-full object-cover"
             :style="{ height: imageHeight }"
             @error="handleImageError($event, carouselFallbackImage)"
           />
           <video
             v-else
             :src="media.src"
-            class="w-full object-cover"
+            class="w-full max-w-full object-cover"
             :style="{ height: imageHeight }"
             autoplay
             muted
@@ -61,16 +61,15 @@
 
     <div
       v-else
-      class="w-full flex items-center justify-center"
+      class="w-full max-w-full flex items-center justify-center"
       :style="{ height: imageHeight, background: '#ffffff' }"
     >
       <span style="color: rgba(13, 43, 15, 0.55); font-weight: 700">Loading carousel...</span>
     </div>
-  </div>
 
   <!-- TAGLINE -->
-  <div class="sr-item w-full py-10 flex flex-col items-center gap-3">
-    <div class="flex items-center gap-3 mb-2">
+  <div class="sr-item w-full max-w-full px-4 py-10 flex flex-col items-center gap-3 overflow-hidden">
+    <div class="flex flex-wrap items-center justify-center gap-3 mb-2 max-w-full">
       <div style="width: 40px; height: 1px; background: #1b5e20; opacity: 0.4"></div>
       <span
         style="
@@ -85,8 +84,8 @@
       <div style="width: 40px; height: 1px; background: #1b5e20; opacity: 0.4"></div>
     </div>
     <h2
-      class="font-bold tracking-widest text-center"
-      style="font-family: 'Cinzel', serif; font-size: 2.5rem; line-height: 1.2"
+      class="font-bold tracking-widest text-center px-3 max-w-full"
+      style="font-family: 'Cinzel', serif; font-size: clamp(1.55rem, 7vw, 2.5rem); line-height: 1.2"
     >
       <span
         class="animate-fade-in inline-block"
@@ -105,7 +104,7 @@
       >
     </h2>
     <p
-      class="animate-fade-in text-center"
+      class="animate-fade-in text-center px-3 max-w-full"
       style="
         animation-delay: 1.1s;
         animation-fill-mode: both;
@@ -132,7 +131,7 @@
 
   <!-- CSU LIBRARY -->
   <div
-    class="w-full flex justify-center py-12 px-6 mt-8 relative"
+    class="w-full max-w-full flex justify-center py-10 sm:py-12 px-4 sm:px-6 mt-8 relative overflow-hidden"
     :style="{
       backgroundImage: `url(${libraryBgImage})`,
       backgroundRepeat: 'repeat',
@@ -140,7 +139,7 @@
     }"
   >
     <div class="absolute inset-0" style="background: rgba(13, 43, 15, 0.88)"></div>
-    <div class="w-[100%] mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-center relative z-10">
+    <div class="w-full max-w-full mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 items-center relative z-10">
       <div class="sr-left w-full h-full flex justify-center">
         <img
           :src="libraryMainImage"
@@ -149,7 +148,7 @@
           @error="handleImageError($event, photo2)"
         />
       </div>
-      <div class="sr-right flex flex-col text-white px-4 relative">
+      <div class="sr-right flex flex-col text-white px-0 sm:px-4 relative">
         <div style="width: 60px; height: 4px; background: #f9dc07; margin-bottom: 16px"></div>
         <div class="mb-4">
           <span
@@ -167,7 +166,7 @@
         </div>
         <h2
           class="mb-4"
-          style="color: white; font-size: 1.9rem; font-weight: 900; letter-spacing: 0.1em"
+          style="color: white; font-size: clamp(1.35rem, 6vw, 1.9rem); font-weight: 900; letter-spacing: 0.07em; line-height: 1.25"
         >
           Caraga State University Library
         </h2>
@@ -191,8 +190,8 @@
   </div>
 
   <!-- READ LEARN DISCOVER -->
-  <div class="w-full overflow-hidden" style="background: #ffffff; position: relative">
-    <div class="w-[100%] mx-auto px-6 py-20 relative z-10">
+  <div class="w-full max-w-full overflow-hidden" style="background: #ffffff; position: relative">
+    <div class="w-full max-w-full mx-auto px-4 sm:px-6 py-14 sm:py-20 relative z-10">
       <div class="sr-item flex flex-col items-center mb-16 gap-3 text-center">
         <p
           style="
@@ -223,7 +222,7 @@
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div
           class="sr-card rld-card relative overflow-hidden cursor-pointer"
-          style="border-radius: 16px; border: 1px solid rgba(13, 43, 15, 0.12); min-height: 480px"
+          style="border-radius: 16px; border: 1px solid rgba(13, 43, 15, 0.12); min-height: clamp(360px, 90vw, 480px)"
           onmouseenter="
             this.querySelector('.rld-img').style.transform = 'scale(1.08)'
             this.querySelectorAll('.rld-desc').forEach((el) => {
@@ -341,7 +340,7 @@
           style="
             border-radius: 16px;
             border: 1px solid rgba(249, 168, 37, 0.3);
-            min-height: 480px;
+            min-height: clamp(360px, 90vw, 480px);
             transition-delay: 0.12s;
           "
           onmouseenter="
@@ -467,7 +466,7 @@
           style="
             border-radius: 16px;
             border: 1px solid rgba(13, 43, 15, 0.12);
-            min-height: 480px;
+            min-height: clamp(360px, 90vw, 480px);
             transition-delay: 0.24s;
           "
           onmouseenter="
@@ -583,10 +582,10 @@
       </div>
 
       <div
-        class="sr-item flex items-center justify-between mt-10 pt-8"
+        class="sr-item flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mt-10 pt-8"
         style="border-top: 1px solid rgba(13, 43, 15, 0.15)"
       >
-        <div class="flex items-center gap-5">
+        <div class="flex flex-wrap items-center justify-center sm:justify-start gap-3 sm:gap-5">
           <span
             style="
               font-size: 0.68rem;
@@ -1207,8 +1206,8 @@
   <!-- END LIBRARY SERVICES & RECOGNITION -->
 
   <!-- LIBRARY UPDATES -->
-  <div class="w-full px-6 py-16" style="background: #f4f6f4">
-    <div class="w-[100%] mx-auto">
+  <div class="w-full max-w-full px-4 sm:px-6 py-14 sm:py-16 overflow-hidden" style="background: #f4f6f4">
+    <div class="w-full max-w-full mx-auto">
       <div class="sr-item flex flex-col items-center mb-12 gap-3 text-center">
         <div class="flex items-center gap-3">
           <div style="width: 32px; height: 3px; background: #f9dc07; border-radius: 2px"></div>
@@ -1318,7 +1317,7 @@
 
   <!-- USEFUL LINKS -->
   <div
-    class="w-[100%] px-6 py-16"
+    class="w-full max-w-full px-4 sm:px-6 py-14 sm:py-16"
     style="background: #003300; position: relative; overflow: hidden"
   >
     <div
@@ -1343,7 +1342,7 @@
         left: -80px;
       "
     ></div>
-    <div class="w-[100%] mx-auto relative z-10">
+    <div class="w-full max-w-full mx-auto relative z-10">
       <div class="sr-item flex flex-col items-center mb-12 gap-3 text-center">
         <div class="flex items-center gap-3">
           <div style="width: 32px; height: 3px; background: #f9dc07; border-radius: 2px"></div>
@@ -1377,7 +1376,7 @@
           :href="usefulLink1"
           target="_blank"
           rel="noopener noreferrer"
-          class="sr-card group flex items-center gap-4 rounded-2xl p-4 transition-all duration-300 hover:-translate-y-1"
+          class="sr-card group flex items-center gap-3 sm:gap-4 rounded-2xl p-3 sm:p-4 transition-all duration-300 hover:-translate-y-1 min-w-0"
           style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.08)"
           onmouseenter="
             this.style.background = 'rgba(249,168,37,0.08)'
@@ -1444,7 +1443,7 @@
           :href="usefulLink2"
           target="_blank"
           rel="noopener noreferrer"
-          class="sr-card group flex items-center gap-4 rounded-2xl p-4 transition-all duration-300 hover:-translate-y-1"
+          class="sr-card group flex items-center gap-3 sm:gap-4 rounded-2xl p-3 sm:p-4 transition-all duration-300 hover:-translate-y-1 min-w-0"
           style="
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.08);
@@ -1515,7 +1514,7 @@
           :href="usefulLink3"
           target="_blank"
           rel="noopener noreferrer"
-          class="sr-card group flex items-center gap-4 rounded-2xl p-4 transition-all duration-300 hover:-translate-y-1"
+          class="sr-card group flex items-center gap-3 sm:gap-4 rounded-2xl p-3 sm:p-4 transition-all duration-300 hover:-translate-y-1 min-w-0"
           style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.08)"
           onmouseenter="
             this.style.background = 'rgba(249,168,37,0.08)'
@@ -1582,7 +1581,7 @@
           :href="usefulLink4"
           target="_blank"
           rel="noopener noreferrer"
-          class="sr-card group flex items-center gap-4 rounded-2xl p-4 transition-all duration-300 hover:-translate-y-1"
+          class="sr-card group flex items-center gap-3 sm:gap-4 rounded-2xl p-3 sm:p-4 transition-all duration-300 hover:-translate-y-1 min-w-0"
           style="
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.08);
@@ -1653,7 +1652,7 @@
           :href="usefulLink5"
           target="_blank"
           rel="noopener noreferrer"
-          class="sr-card group flex items-center gap-4 rounded-2xl p-4 transition-all duration-300 hover:-translate-y-1"
+          class="sr-card group flex items-center gap-3 sm:gap-4 rounded-2xl p-3 sm:p-4 transition-all duration-300 hover:-translate-y-1 min-w-0"
           style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.08)"
           onmouseenter="
             this.style.background = 'rgba(249,168,37,0.08)'
@@ -1720,7 +1719,7 @@
           :href="usefulLink6"
           target="_blank"
           rel="noopener noreferrer"
-          class="sr-card group flex items-center gap-4 rounded-2xl p-4 transition-all duration-300 hover:-translate-y-1"
+          class="sr-card group flex items-center gap-3 sm:gap-4 rounded-2xl p-3 sm:p-4 transition-all duration-300 hover:-translate-y-1 min-w-0"
           style="
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.08);
@@ -1793,7 +1792,7 @@
 
   <!-- WATCH & EXPLORE -->
   <div class="w-full py-16 px-6" style="background: #f4f6f4">
-    <div class="w-[100%] mx-auto">
+    <div class="w-full max-w-full mx-auto">
       <div class="sr-item flex flex-col items-center mb-12 gap-3 text-center">
         <div class="flex items-center gap-3">
           <div style="width: 32px; height: 3px; background: #f9dc07; border-radius: 2px"></div>
@@ -1987,6 +1986,7 @@
       </svg>
     </button>
   </Transition>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -2435,4 +2435,46 @@ onUnmounted(() => {
 .fade-leave-to {
   opacity: 0;
 }
+
+/* ================================
+   HOMEPAGE RESPONSIVE / WHITE SPACE FIX
+================================ */
+:global(html),
+:global(body),
+:global(#app) {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.homepage-root {
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+  position: relative;
+}
+
+.homepage-root * {
+  box-sizing: border-box;
+}
+
+.homepage-root img,
+.homepage-root video {
+  max-width: 100%;
+}
+
+@media (max-width: 640px) {
+  .homepage-root [style*='letter-spacing'] {
+    letter-spacing: 0.1em !important;
+  }
+
+  .homepage-root .rld-num {
+    font-size: 4rem !important;
+  }
+
+  .homepage-root .rld-card h3 {
+    font-size: 1.8rem !important;
+  }
+}
+
 </style>
