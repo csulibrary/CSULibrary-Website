@@ -1,27 +1,8 @@
 <template>
   <section class="py-12 bg-white min-h-screen overflow-hidden">
     <div class="max-[100%] mx-auto px-8">
-      <!-- Month Filter -->
-      <!-- <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-6">
-        <nav class="flex items-center gap-1 overflow-x-auto mx-auto pb-2 scrollbar-hide nav-reveal">
-          <button
-            v-for="(month, index) in months"
-            :key="month"
-            @click="selectedEventMonth = month"
-            :class="[
-              'pill-entrance whitespace-nowrap px-5 py-2 rounded-full text-sm font-medium transition-all duration-300',
-              selectedEventMonth === month
-                ? 'bg-[#003300] text-white shadow-lg scale-105'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200',
-            ]"
-            :style="{ '--p-i': index }"
-          >
-            {{ month }}
-          </button>
-        </nav>
-      </div> -->
-
-      <!-- Carousel -->
+      
+<!-- Carousel -->
       <div v-if="pinnedEvents.length > 0" class="mb-15 relative event-carousel group/carousel">
         <div class="relative overflow-hidden rounded-[2.5rem] shadow-2xl">
           <div
