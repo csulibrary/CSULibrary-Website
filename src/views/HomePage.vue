@@ -13,6 +13,7 @@
             :alt="media.alt"
             class="w-full object-cover"
             :style="{ height: imageHeight }"
+            @error="handleImageError($event, carouselFallbackImage)"
           />
           <video
             v-else
@@ -141,7 +142,12 @@
     <div class="absolute inset-0" style="background: rgba(13, 43, 15, 0.88)"></div>
     <div class="w-[100%] mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-center relative z-10">
       <div class="sr-left w-full h-full flex justify-center">
-        <img :src="libraryMainImage" alt="Students" class="w-full h-full object-cover rounded-sm" />
+        <img
+          :src="libraryMainImage"
+          alt="Students"
+          class="w-full h-full object-cover rounded-sm"
+          @error="handleImageError($event, photo2)"
+        />
       </div>
       <div class="sr-right flex flex-col text-white px-4 relative">
         <div style="width: 60px; height: 4px; background: #f9dc07; margin-bottom: 16px"></div>
@@ -1262,7 +1268,7 @@
         >
           <div class="relative overflow-hidden" style="height: 220px">
             <img
-              :src="announcement.image_url ?? undefined"
+              :src="safeSrc(announcement.image_url, card1)"
               :alt="announcement.title"
               class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
             />
@@ -1386,7 +1392,12 @@
             class="flex-shrink-0 rounded-xl overflow-hidden"
             style="width: 72px; height: 72px; background: white"
           >
-            <img :src="usefulImage1" alt="E-Lib" class="w-full h-full object-cover" />
+            <img
+              :src="usefulImage1"
+              alt="E-Lib"
+              class="w-full h-full object-cover"
+              @error="handleImageError($event, eLib)"
+            />
           </div>
           <div class="flex-1 min-w-0">
             <p
@@ -1452,7 +1463,12 @@
             class="flex-shrink-0 rounded-xl overflow-hidden flex items-center justify-center"
             style="width: 72px; height: 72px; background: white"
           >
-            <img :src="usefulImage2" alt="CARSU" class="w-14 h-14 object-contain" />
+            <img
+              :src="usefulImage2"
+              alt="CARSU"
+              class="w-14 h-14 object-contain"
+              @error="handleImageError($event, '/csu-logo.png')"
+            />
           </div>
           <div class="flex-1 min-w-0">
             <p
@@ -1514,7 +1530,12 @@
             class="flex-shrink-0 rounded-xl overflow-hidden"
             style="width: 72px; height: 72px; background: white"
           >
-            <img :src="usefulImage3" alt="OPAC" class="w-full h-full object-cover" />
+            <img
+              :src="usefulImage3"
+              alt="OPAC"
+              class="w-full h-full object-cover"
+              @error="handleImageError($event, opac)"
+            />
           </div>
           <div class="flex-1 min-w-0">
             <p
@@ -1580,7 +1601,12 @@
             class="flex-shrink-0 rounded-xl overflow-hidden"
             style="width: 72px; height: 72px; background: white"
           >
-            <img :src="usefulImage4" alt="Free Journals" class="w-full h-full object-cover" />
+            <img
+              :src="usefulImage4"
+              alt="Free Journals"
+              class="w-full h-full object-cover"
+              @error="handleImageError($event, freeJournals)"
+            />
           </div>
           <div class="flex-1 min-w-0">
             <p
@@ -1642,7 +1668,12 @@
             class="flex-shrink-0 rounded-xl overflow-hidden"
             style="width: 72px; height: 72px; background: white"
           >
-            <img :src="usefulImage5" alt="Infotrac" class="w-full h-full object-cover" />
+            <img
+              :src="usefulImage5"
+              alt="Infotrac"
+              class="w-full h-full object-cover"
+              @error="handleImageError($event, gale)"
+            />
           </div>
           <div class="flex-1 min-w-0">
             <p
@@ -1708,7 +1739,12 @@
             class="flex-shrink-0 rounded-xl overflow-hidden flex items-center justify-center"
             style="width: 72px; height: 72px; background: white"
           >
-            <img :src="usefulImage6" alt="EBSCO" class="w-full h-full object-contain p-1" />
+            <img
+              :src="usefulImage6"
+              alt="EBSCO"
+              class="w-full h-full object-contain p-1"
+              @error="handleImageError($event, ebsco)"
+            />
           </div>
           <div class="flex-1 min-w-0">
             <p
@@ -2062,6 +2098,8 @@ const defaultImages: CarouselDisplayItem[] = [
   { id: 'default-5', type: 'image', src: photo5, alt: 'Photo 5' },
 ]
 
+const carouselFallbackImage = computed(() => defaultImages[0]?.src || photo1)
+
 const mediaItems = ref<MediaItem[]>([])
 
 function extractYouTubeId(url: string) {
@@ -2089,11 +2127,27 @@ function getYouTubeEmbed(url: string) {
   return id ? `https://www.youtube.com/embed/${id}` : ''
 }
 
+function isUsableUrl(url?: string | null) {
+  const value = String(url || '').trim()
+  if (!value) return false
+  if (value === 'null' || value === 'undefined') return false
+  return true
+}
+
+function safeSrc(value: string | null | undefined, fallback: string) {
+  return isUsableUrl(value) ? String(value).trim() : fallback
+}
+
+function handleImageError(event: Event, fallback: string) {
+  const image = event.target as HTMLImageElement
+  if (image && image.src !== fallback) image.src = fallback
+}
+
 function normalizeMediaRow(row: any): MediaItem {
   const mediaType = (row.media_type || 'image') as MediaType
-  const videoUrl = row.video_url || row.external_link || ''
-  const imageUrl = row.image_url || ''
-  const thumbnailUrl = row.thumbnail_url || imageUrl || getYouTubeThumbnail(videoUrl)
+  const videoUrl = String(row.video_url || row.external_link || '').trim()
+  const imageUrl = String(row.image_url || '').trim()
+  const thumbnailUrl = String(row.thumbnail_url || imageUrl || getYouTubeThumbnail(videoUrl)).trim()
 
   return {
     id: row.id,
@@ -2113,7 +2167,7 @@ function normalizeMediaRow(row: any): MediaItem {
 function loadMediaFromLocalStorage() {
   try {
     const raw = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]')
-    mediaItems.value = Array.isArray(raw) ? raw : []
+    mediaItems.value = Array.isArray(raw) ? raw.filter((item) => item && item.page === 'homepage') : []
   } catch {
     mediaItems.value = []
   }
@@ -2124,6 +2178,7 @@ async function loadMediaFromSupabase() {
   try {
     const rows = await getImagesByPage('homepage')
     mediaItems.value = rows.map(normalizeMediaRow)
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(mediaItems.value))
   } catch (error) {
     console.error('Failed to load homepage media from Supabase:', error)
     loadMediaFromLocalStorage()
@@ -2158,26 +2213,26 @@ const updateItems = computed(() => getSectionMedia('library-updates'))
 const usefulItems = computed(() => getSectionMedia('useful-links'))
 const featureItems = computed(() => getSectionMedia('features'))
 
-const libraryBgImage = computed(() => librarySectionItems.value[0]?.src || designBg)
-const libraryMainImage = computed(() => librarySectionItems.value[1]?.src || photo2)
+const libraryBgImage = computed(() => safeSrc(librarySectionItems.value[0]?.src, designBg))
+const libraryMainImage = computed(() => safeSrc(librarySectionItems.value[1]?.src, photo2))
 
-const rldImage1 = computed(() => rldItems.value[0]?.src || '')
-const rldImage2 = computed(() => rldItems.value[1]?.src || '')
-const rldImage3 = computed(() => rldItems.value[2]?.src || '')
+const rldImage1 = computed(() => safeSrc(rldItems.value[0]?.src, card1))
+const rldImage2 = computed(() => safeSrc(rldItems.value[1]?.src, card2))
+const rldImage3 = computed(() => safeSrc(rldItems.value[2]?.src, card3))
 
-const updateImage1 = computed(() => updateItems.value[0]?.src || card1)
-const updateImage2 = computed(() => updateItems.value[1]?.src || card2)
-const updateImage3 = computed(() => updateItems.value[2]?.src || card3)
-const updateImage4 = computed(() => updateItems.value[3]?.src || reservation)
-const updateImage5 = computed(() => updateItems.value[4]?.src || topImg)
-const updateImage6 = computed(() => updateItems.value[5]?.src || newlyAcquiredBooks)
+const updateImage1 = computed(() => safeSrc(updateItems.value[0]?.src, card1))
+const updateImage2 = computed(() => safeSrc(updateItems.value[1]?.src, card2))
+const updateImage3 = computed(() => safeSrc(updateItems.value[2]?.src, card3))
+const updateImage4 = computed(() => safeSrc(updateItems.value[3]?.src, reservation))
+const updateImage5 = computed(() => safeSrc(updateItems.value[4]?.src, topImg))
+const updateImage6 = computed(() => safeSrc(updateItems.value[5]?.src, newlyAcquiredBooks))
 
-const usefulImage1 = computed(() => usefulItems.value[0]?.src || eLib)
-const usefulImage2 = computed(() => usefulItems.value[1]?.src || '/csu-logo.png')
-const usefulImage3 = computed(() => usefulItems.value[2]?.src || opac)
-const usefulImage4 = computed(() => usefulItems.value[3]?.src || freeJournals)
-const usefulImage5 = computed(() => usefulItems.value[4]?.src || gale)
-const usefulImage6 = computed(() => usefulItems.value[5]?.src || ebsco)
+const usefulImage1 = computed(() => safeSrc(usefulItems.value[0]?.src, eLib))
+const usefulImage2 = computed(() => safeSrc(usefulItems.value[1]?.src, '/csu-logo.png'))
+const usefulImage3 = computed(() => safeSrc(usefulItems.value[2]?.src, opac))
+const usefulImage4 = computed(() => safeSrc(usefulItems.value[3]?.src, freeJournals))
+const usefulImage5 = computed(() => safeSrc(usefulItems.value[4]?.src, gale))
+const usefulImage6 = computed(() => safeSrc(usefulItems.value[5]?.src, ebsco))
 
 const usefulLink1 = computed(() => usefulItems.value[0]?.externalLink || 'https://www.elib.gov.ph')
 const usefulLink2 = computed(
