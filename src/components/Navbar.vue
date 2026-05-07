@@ -3,10 +3,15 @@
     <div class="w-full px-6 lg:px-10">
       <div class="flex justify-between items-center h-20">
         <!-- LOGO -->
-        <RouterLink to="/" class="flex items-center" @click="closeMenu">
-          <img src="/csu-logo.png" alt="University Logo" class="w-40 h-auto" />
-          <div class="flex flex-col font-serif leading-tight text-[#003300]"></div>
-        </RouterLink>
+<a
+  href="https://www.carsu.edu.ph/"
+  class="flex items-center"
+  aria-label="Go to Caraga State University official website"
+  @click="closeMenu"
+>
+  <img src="/csu-logo.png" alt="University Logo" class="w-40 h-auto" />
+  <div class="flex flex-col font-serif leading-tight text-[#003300]"></div>
+</a>
 
         <!-- DESKTOP NAV -->
         <nav class="hidden xl:flex items-center">
