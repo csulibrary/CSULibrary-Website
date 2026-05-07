@@ -1,18 +1,8 @@
 <template>
   <section class="py-12 bg-white min-h-screen overflow-hidden">
     <div class="max-[100%] mx-auto px-8">
-      <div class="page-inner">
-        <div class="section-title section-title-center">
-          <span class="section-kicker title-container">
-            <span class="kicker-line"></span>
-            <span class="kicker-text">WHAT'S HAPPENING AT CSU LIBRARY</span>
-          </span>
-          <h1 class="section-headline title-headline">ANNOUNCEMENTS</h1>
-        </div>
-      </div>
-
       <!-- Month Filter -->
-      <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-6">
+      <!-- <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-6">
         <nav class="flex items-center gap-1 overflow-x-auto mx-auto pb-2 scrollbar-hide nav-reveal">
           <button
             v-for="(month, index) in months"
@@ -29,7 +19,7 @@
             {{ month }}
           </button>
         </nav>
-      </div>
+      </div> -->
 
       <!-- Carousel -->
       <div v-if="pinnedEvents.length > 0" class="mb-15 relative event-carousel group/carousel">
@@ -79,7 +69,7 @@
 
 
       <!-- General Announcements -->
-      <div class="mt-16" v-if="generalAnnouncements.length > 0">
+      <div class="mt-4" v-if="generalAnnouncements.length > 0">
         <div class="section-title section-title-center">
           <span class="section-kicker title-container">
             <span class="kicker-line"></span>
@@ -540,7 +530,7 @@ onUnmounted(() => {
 }
 
 .section-headline {
-  margin: 10px 0 1%;
+  margin: 2px 0 1%;
   font-weight: 900;
   font-size: clamp(1.6rem, 5vw, 3.3rem);
   color: #003300;
