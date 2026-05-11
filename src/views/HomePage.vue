@@ -1128,7 +1128,7 @@ import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { getImagesByPage } from '@/services/websiteImageService'
 import { supabase } from '@/lib/supabase'
 
-import photo1 from '@/assets/images/img.jpg'
+// import photo1 from '@/assets/images/img.jpg'
 import photo2 from '@/assets/images/lib.jpg'
 import photo3 from '@/assets/images/img1.jpg'
 import photo4 from '@/assets/images/img2.jpg'
@@ -1225,14 +1225,14 @@ const STORAGE_KEY = 'website-media-v11'
 const isMediaLoaded = ref(false)
 
 const defaultImages: CarouselDisplayItem[] = [
-  { id: 'default-1', type: 'image', src: photo1, alt: 'Photo 1' },
+  // { id: 'default-1', type: 'image', src: photo1, alt: 'Photo 1' },
   { id: 'default-2', type: 'image', src: photo2, alt: 'Photo 2' },
   { id: 'default-3', type: 'image', src: photo3, alt: 'Photo 3' },
   { id: 'default-4', type: 'image', src: photo4, alt: 'Photo 4' },
   { id: 'default-5', type: 'image', src: photo5, alt: 'Photo 5' },
 ]
 
-const carouselFallbackImage = computed(() => defaultImages[0]?.src || photo1)
+const carouselFallbackImage = computed(() => defaultImages[0]?.src || photo2)
 
 const mediaItems = ref<MediaItem[]>([])
 
