@@ -271,9 +271,9 @@ const selectedMember = ref<Member | null>(null)
 const teamMembers = ref<Member[]>([
   {
     name: 'Eden Grace M. Bughao',
-    role: 'Project Lead / System Architect',
+    role: 'Project Lead',
     image: edenImg,
-    bio: '4th Year BS Information Technology student with interests in web development and database systems. Dedicated to creating efficient and scalable solutions for real-world problems.',
+    bio: '4th Year BS Information Technology student with interests in database systems. Dedicated to creating efficient and scalable solutions for real-world problems.',
     github: 'https://github.com/blueuches',
   },
   {

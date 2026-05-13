@@ -11,10 +11,10 @@ import {
   uploadWebsiteImage,
 } from '@/services/websiteImageService'
 
-const assetModules = import.meta.glob(
-  '/src/assets/**/*.{jpg,jpeg,png,gif,webp,svg,png}',
-  { eager: true, import: 'default' }
-) as Record<string, string>
+const assetModules = import.meta.glob('/src/assets/**/*.{jpg,jpeg,png,gif,webp,svg}', {
+  eager: true,
+  import: 'default',
+}) as unknown as Record<string, string>
 
 function resolveMediaUrl(url?: string | null): string {
   if (!url) return ''
@@ -24,7 +24,16 @@ function resolveMediaUrl(url?: string | null): string {
     url.startsWith('data:') ||
     url.startsWith('blob:')
   ) return url
+
   if (assetModules[url]) return assetModules[url]
+
+  const normalized = url.startsWith('/src/') ? url : `/src/assets/${url.replace(/^\/?(src\/assets\/|assets\/)/, '')}`
+  if (assetModules[normalized]) return assetModules[normalized]
+
+  const lower = normalized.toLowerCase()
+  const found = Object.keys(assetModules).find(k => k.toLowerCase() === lower)
+  if (found) return assetModules[found]!
+
   return url
 }
 
