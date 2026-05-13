@@ -31,7 +31,7 @@
           v-if="!isCollapsed"
           class="ml-3 text-white font-black tracking-widest text-sm uppercase truncate"
         >
-          Library Admin
+          Website Admin
         </h1>
       </transition>
     </div>

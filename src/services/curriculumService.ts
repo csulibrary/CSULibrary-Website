@@ -831,6 +831,78 @@ export const getProgramsByCollegeId = async (collegeId: string): Promise<Array<{
 }
 
 /**
+ * Fetch all courses
+ */
+export const getAllCourses = async (): Promise<Array<{ id: string; course_code: string | null; course_title: string }>> => {
+  const { data, error } = await supabase
+    .from('courses')
+    .select('id, course_code, course_title')
+    .order('course_code', { ascending: true })
+
+  if (error) {
+    console.error('Error fetching courses:', error)
+    throw error
+  }
+
+  return (data as Array<{ id: string; course_code: string | null; course_title: string }> | null) ?? []
+}
+
+/**
+ * Create course
+ */
+export const createCourse = async (courseCode: string | null, courseTitle: string): Promise<string> => {
+  const { data, error } = await supabase
+    .from('courses')
+    .insert([{ course_code: courseCode || null, course_title: courseTitle }])
+    .select('id')
+    .single()
+
+  if (error) {
+    console.error('Error creating course:', error)
+    throw error
+  }
+
+  return data.id
+}
+
+/**
+ * Update course
+ */
+export const updateCourse = async (
+  courseId: string,
+  courseCode: string | null,
+  courseTitle: string,
+): Promise<void> => {
+  const { error } = await supabase
+    .from('courses')
+    .update({
+      course_code: courseCode || null,
+      course_title: courseTitle,
+    })
+    .eq('id', courseId)
+
+  if (error) {
+    console.error('Error updating course:', error)
+    throw error
+  }
+}
+
+/**
+ * Delete course
+ */
+export const deleteCourse = async (courseId: string): Promise<void> => {
+  const { error } = await supabase
+    .from('courses')
+    .delete()
+    .eq('id', courseId)
+
+  if (error) {
+    console.error('Error deleting course:', error)
+    throw error
+  }
+}
+
+/**
  * Create or get course by code
  */
 export const getOrCreateCourse = async (courseCode: string, courseTitle: string): Promise<string> => {
