@@ -83,7 +83,7 @@
       </div>
 
       <!-- CONTENT -->
-      <div v-else class="p-10">
+      <div v-else class="ps-10">
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
           <div
             v-for="(service, index) in store.services"

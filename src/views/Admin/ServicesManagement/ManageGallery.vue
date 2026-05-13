@@ -372,7 +372,7 @@
               <div class="fg-section">Section Info</div>
               <div class="fg">
                 <label>Title <span class="req">*</span></label>
-                <input v-model="form.title" placeholder="e.g. Quiet Room for PWD" />
+                <input v-model="form.title" placeholder="e.g. Quiet Room" />
               </div>
               <div class="fg">
                 <label>Description <span class="req">*</span></label>
