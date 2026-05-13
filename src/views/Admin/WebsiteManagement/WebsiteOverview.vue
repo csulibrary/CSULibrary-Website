@@ -61,7 +61,7 @@
           Feature Cards
         </button>
 
-        <button
+        <!-- <button
           @click="activeSection = 'library'"
           :class="
             activeSection === 'library'
@@ -71,7 +71,7 @@
           class="px-6 py-3 rounded-xl font-bold shadow-sm transition"
         >
           Library Banner
-        </button>
+        </button> -->
       </div>
 
       <!-- HERO CAROUSEL -->
@@ -139,7 +139,7 @@
         </div>
       </section>
 
-      <!-- LIBRARY BANNER -->
+      <!-- LIBRARY BANNER
       <section v-if="activeSection === 'library'" class="animate-fade-in">
         <div class="bg-white rounded-3xl shadow-lg p-10">
           <h4 class="font-black text-xl mb-8">CSU Library Banner</h4>
@@ -163,7 +163,7 @@
             </div>
           </div>
         </div>
-      </section>
+      </section> -->
     </div>
   </div>
 </template>
