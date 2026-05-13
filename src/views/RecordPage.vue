@@ -546,7 +546,10 @@ async function loadRecords() {
       .order('created_at', { ascending: true })
 
     if (error) throw new Error(error.message)
-    records.value = (data ?? []) as PublicRecordRow[]
+
+    records.value = ((data ?? []) as PublicRecordRow[]).filter(
+      (record) => record.title?.trim().toLowerCase() !== 'cd-rom',
+    )
   } catch (err: unknown) {
     loadError.value = err instanceof Error ? err.message : 'Failed to load records.'
   } finally {
