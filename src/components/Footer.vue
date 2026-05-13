@@ -173,11 +173,11 @@
 
         <div class="flex flex-col">
           <div class="flex items-center gap-3 mb-4 justify-center lg:justify-start">
-            <div class="h-6 w-[4px] bg-[#f9dc07] rounded-full"></div>
+            <div class="h-6 w-1 bg-[#f9dc07] rounded-full"></div>
             <h2 class="text-xl font-black tracking-widest text-white uppercase">Find Us</h2>
           </div>
           <div
-            class="flex-grow min-h-[150px] rounded-3xl overflow-hidden shadow-2xl border-2 border-slate-500/50 group relative"
+            class="grow min-h-37.5 rounded-3xl overflow-hidden shadow-2xl border-2 border-slate-500/50 group relative"
           >
             <iframe
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3941.132205166258!2d125.5901111!3d8.9599528!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3301eadf9d65123d%3A0xc3f58e65e4d293f0!2sCaraga%20State%20University!5e0!3m2!1sen!2sph!4v1700000000000"
