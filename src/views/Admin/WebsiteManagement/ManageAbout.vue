@@ -749,14 +749,14 @@ onBeforeUnmount(() => {
   margin-left: auto;
   margin-right: auto;
   display: flex;
-  justify-content: center;
+  justify-content: left;
   gap: 16px;
   flex-wrap: wrap;
 }
 
 .icon-pill {
   display: inline-flex;
-  align-items: center;
+  align-items: left ;
   gap: 10px;
   padding: 10px 16px;
   border-radius: 999px;

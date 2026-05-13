@@ -3,16 +3,15 @@ import { supabase } from '@/lib/supabase'
 const TABLE = 'personnel'
 
 export const personnelService = {
-
   async getAll() {
-  const { data, error } = await supabase
-    .from(TABLE)
-    .select('*')
-    .order('created_at', { ascending: true })  // ← i-change sa true
+    const { data, error } = await supabase
+      .from(TABLE)
+      .select('*')
+      .order('display_order', { ascending: true, nullsFirst: false })
 
-  if (error) throw error
-  return data
-},
+    if (error) throw error
+    return data
+  },
 
   async getById(id: string) {
     const { data, error } = await supabase
@@ -53,6 +52,5 @@ export const personnelService = {
       .eq('id', id)
 
     if (error) throw error
-  }
-
+  },
 }

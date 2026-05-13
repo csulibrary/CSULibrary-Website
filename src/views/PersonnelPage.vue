@@ -46,6 +46,7 @@
                 class="featured-photo"
               />
             </div>
+
             <div class="featured-info">
               <span class="featured-badge">Head of Library Services</span>
               <h2 class="featured-name">{{ fullName(featuredStaff) }}</h2>
@@ -83,10 +84,13 @@
                 class="staff-photo"
               />
             </div>
+
             <div class="staff-info">
               <h3 class="staff-name">{{ fullName(person) }}</h3>
               <div class="staff-rule"></div>
-              <p v-if="person.position" class="staff-position">{{ person.position }}</p>
+              <p v-if="person.position" class="staff-position">
+                {{ person.position }}
+              </p>
             </div>
           </div>
         </div>
@@ -141,6 +145,7 @@ interface PersonnelRow {
   image_url: string | null
   is_active: boolean | null
   created_at: string | null
+  display_order: number | null
 }
 
 // ─── Default avatar SVG (shown when image_url is empty) ───────────────────────
@@ -158,22 +163,41 @@ function fullName(person: PersonnelRow): string {
   const last = person.last_name?.trim().toUpperCase() ?? ''
   const first = person.first_name?.trim().toUpperCase() ?? ''
   const titles = person.professional_titles?.trim() ?? ''
+
   const name = [last, first].filter(Boolean).join(', ')
+
   return titles ? `${name}, ${titles}` : name
 }
 
 // ─── Computed ─────────────────────────────────────────────────────────────────
+const activeStaff = computed<PersonnelRow[]>(() =>
+  staff.value
+    .filter((s) => s.is_active !== false)
+    .slice()
+    .sort((a, b) => {
+      const orderA = a.display_order ?? 999
+      const orderB = b.display_order ?? 999
+
+      if (orderA !== orderB) {
+        return orderA - orderB
+      }
+
+      return (a.last_name ?? '').localeCompare(b.last_name ?? '')
+    }),
+)
+
 const featuredStaff = computed<PersonnelRow | undefined>(() =>
-  staff.value.find((s) => s.role?.toLowerCase() === 'head' && s.is_active !== false),
+  activeStaff.value.find((s) => s.role?.toLowerCase() === 'head'),
 )
 
 const otherStaff = computed<PersonnelRow[]>(() =>
-  staff.value.filter((s) => s.role?.toLowerCase() !== 'head' && s.is_active !== false),
+  activeStaff.value.filter((s) => s.role?.toLowerCase() !== 'head'),
 )
 
 // ─── Fetch from Supabase via personnelService ─────────────────────────────────
 async function fetchPersonnel() {
   loading.value = true
+
   try {
     const data = await personnelService.getAll()
     staff.value = (data ?? []) as PersonnelRow[]
@@ -189,6 +213,7 @@ async function fetchPersonnel() {
 function handleScroll() {
   showScrollTop.value = window.scrollY > 300
 }
+
 function scrollToTop() {
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
@@ -196,14 +221,22 @@ function scrollToTop() {
 // ─── Intersection Observer (scroll reveal) ────────────────────────────────────
 function initObserver() {
   observer?.disconnect()
+
   observer = new IntersectionObserver(
     (entries) =>
-      entries.forEach((e) => {
-        e.isIntersecting ? e.target.classList.add('in-view') : e.target.classList.remove('in-view')
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view')
+        } else {
+          entry.target.classList.remove('in-view')
+        }
       }),
     { threshold: 0.1 },
   )
-  document.querySelectorAll('.sr-item, .sr-card').forEach((el) => observer!.observe(el))
+
+  document.querySelectorAll('.sr-item, .sr-card').forEach((el) => {
+    observer?.observe(el)
+  })
 }
 
 // ─── Lifecycle ────────────────────────────────────────────────────────────────
@@ -212,6 +245,7 @@ onMounted(() => {
   window.addEventListener('scroll', handleScroll)
   setTimeout(initObserver, 100)
 })
+
 onUnmounted(() => {
   window.removeEventListener('scroll', handleScroll)
   observer?.disconnect()
@@ -232,6 +266,7 @@ onUnmounted(() => {
     transform: translateY(0);
   }
 }
+
 @keyframes heroFadeUp {
   from {
     opacity: 0;
@@ -242,6 +277,7 @@ onUnmounted(() => {
     transform: translateY(0);
   }
 }
+
 @keyframes heroScaleIn {
   from {
     opacity: 0;
@@ -252,6 +288,7 @@ onUnmounted(() => {
     transform: scaleX(1);
   }
 }
+
 @keyframes heroDotPop {
   0% {
     opacity: 0;
@@ -270,22 +307,27 @@ onUnmounted(() => {
   opacity: 0;
   animation: heroFadeDown 0.6s ease 0.1s forwards;
 }
+
 .anim-title {
   opacity: 0;
   animation: heroFadeUp 0.7s ease 0.35s forwards;
 }
+
 .anim-divider {
   opacity: 0;
   animation: heroScaleIn 0.55s cubic-bezier(0.23, 1, 0.32, 1) 0.75s forwards;
 }
+
 .anim-divider .hero-dot:nth-child(1) {
   opacity: 0;
   animation: heroDotPop 0.4s ease 0.9s forwards;
 }
+
 .anim-divider .hero-dot:nth-child(3) {
   opacity: 0;
   animation: heroDotPop 0.4s ease 1.05s forwards;
 }
+
 .anim-divider .hero-dot:nth-child(5) {
   opacity: 0;
   animation: heroDotPop 0.4s ease 1.2s forwards;
@@ -307,6 +349,7 @@ onUnmounted(() => {
   position: relative;
   overflow: hidden;
 }
+
 .hero-overlay {
   background: linear-gradient(
     to bottom,
@@ -315,6 +358,7 @@ onUnmounted(() => {
     rgba(4, 16, 5, 0.9) 100%
   );
 }
+
 .hero-eyebrow {
   font-size: 0.65rem;
   font-weight: 700;
@@ -323,6 +367,7 @@ onUnmounted(() => {
   text-transform: uppercase;
   opacity: 0.85;
 }
+
 .hero-title {
   font-family: 'Poppins', sans-serif;
   font-size: clamp(1rem, 4vw, 2rem);
@@ -332,24 +377,29 @@ onUnmounted(() => {
   text-transform: uppercase;
   line-height: 1;
 }
+
 .hero-divider {
   display: flex;
   align-items: center;
   gap: 8px;
   margin: 4px 0;
 }
+
 .hero-dot {
   width: 5px;
   height: 5px;
   border-radius: 50%;
   display: inline-block;
 }
+
 .hero-dot.gold {
   background: #f9dc07;
 }
+
 .hero-dot.green {
   background: #009900;
 }
+
 .hero-line {
   width: 40px;
   height: 1px;
@@ -365,6 +415,7 @@ onUnmounted(() => {
     transform: rotate(360deg);
   }
 }
+
 .loader-ring {
   width: 40px;
   height: 40px;
@@ -373,6 +424,7 @@ onUnmounted(() => {
   border-top-color: #003300;
   animation: spin 0.7s linear infinite;
 }
+
 .loading-text {
   font-size: 0.7rem;
   font-weight: 700;
@@ -389,6 +441,7 @@ onUnmounted(() => {
   width: 40px;
   background: linear-gradient(to right, #003300, rgba(13, 43, 15, 0.15));
 }
+
 .label-text {
   font-size: 0.65rem;
   font-weight: 800;
@@ -404,6 +457,7 @@ onUnmounted(() => {
 .featured-wrapper {
   animation: fadeUp 0.7s ease both;
 }
+
 .featured-card {
   position: relative;
   display: flex;
@@ -417,6 +471,7 @@ onUnmounted(() => {
   box-shadow: 0 4px 40px rgba(13, 43, 15, 0.07);
   overflow: hidden;
 }
+
 .featured-accent-bar {
   position: absolute;
   left: 0;
@@ -425,6 +480,7 @@ onUnmounted(() => {
   width: 4px;
   background: linear-gradient(to bottom, #f9dc07, #009900);
 }
+
 .featured-photo-wrap {
   position: relative;
   flex-shrink: 0;
@@ -433,6 +489,7 @@ onUnmounted(() => {
   border-radius: 50%;
   overflow: visible;
 }
+
 .featured-photo {
   position: absolute;
   bottom: 0;
@@ -445,15 +502,18 @@ onUnmounted(() => {
   z-index: 1;
   transition: transform 0.3s ease;
 }
+
 .featured-photo:hover {
   transform: translateX(-50%) scale(1.05);
 }
+
 .featured-info {
   flex: 1;
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
+
 .featured-badge {
   display: inline-block;
   font-size: 0.6rem;
@@ -466,6 +526,7 @@ onUnmounted(() => {
   border-radius: 2px;
   width: fit-content;
 }
+
 .featured-name {
   font-family: 'Poppins', sans-serif;
   font-size: 1.5rem;
@@ -474,17 +535,20 @@ onUnmounted(() => {
   line-height: 1.2;
   letter-spacing: 0.03em;
 }
+
 .featured-subtitle {
   font-size: 0.85rem;
   color: #009900;
   font-style: italic;
 }
+
 .featured-divider {
   width: 48px;
   height: 2px;
   background: linear-gradient(to right, #f9dc07, rgba(249, 168, 37, 0.2));
   border-radius: 2px;
 }
+
 .featured-position {
   font-size: 0.78rem;
   font-weight: 700;
@@ -501,6 +565,7 @@ onUnmounted(() => {
   grid-template-columns: repeat(2, 1fr);
   gap: 24px;
 }
+
 .staff-card {
   position: relative;
   display: flex;
@@ -519,11 +584,13 @@ onUnmounted(() => {
   overflow: hidden;
   margin-top: 8px;
 }
+
 .staff-card:hover {
   box-shadow: 0 8px 32px rgba(13, 43, 15, 0.12);
   transform: translateY(-3px);
   border-color: rgba(249, 168, 37, 0.35);
 }
+
 .staff-photo-wrap {
   position: relative;
   flex-shrink: 0;
@@ -532,6 +599,7 @@ onUnmounted(() => {
   border-radius: 50%;
   overflow: visible;
 }
+
 .staff-photo {
   position: absolute;
   bottom: 0;
@@ -544,9 +612,11 @@ onUnmounted(() => {
   z-index: 1;
   transition: transform 0.3s ease;
 }
+
 .staff-card:hover .staff-photo {
   transform: translateX(-50%) scale(1.05);
 }
+
 .staff-info {
   flex: 1;
   display: flex;
@@ -554,6 +624,7 @@ onUnmounted(() => {
   gap: 6px;
   min-width: 0;
 }
+
 .staff-name {
   font-family: 'Poppins', sans-serif;
   font-size: 0.88rem;
@@ -562,6 +633,7 @@ onUnmounted(() => {
   line-height: 1.3;
   letter-spacing: 0.01em;
 }
+
 .staff-rule {
   width: 28px;
   height: 1.5px;
@@ -569,15 +641,18 @@ onUnmounted(() => {
   border-radius: 2px;
   transition: width 0.3s ease;
 }
+
 .staff-card:hover .staff-rule {
   width: 48px;
 }
+
 .staff-subtitle {
   font-size: 0.75rem;
   color: #009900;
   font-style: italic;
   line-height: 1.5;
 }
+
 .staff-position {
   font-size: 0.68rem;
   font-weight: 700;
@@ -585,6 +660,7 @@ onUnmounted(() => {
   text-transform: uppercase;
   color: rgba(13, 43, 15, 0.45);
 }
+
 .staff-card::after {
   content: '';
   position: absolute;
@@ -597,6 +673,7 @@ onUnmounted(() => {
   transform-origin: left;
   transition: transform 0.4s ease;
 }
+
 .staff-card:hover::after {
   transform: scaleX(1);
 }
@@ -612,6 +689,7 @@ onUnmounted(() => {
     opacity 0.6s ease,
     transform 0.6s ease;
 }
+
 .sr-item.in-view,
 .sr-card.in-view {
   opacity: 1;
@@ -625,6 +703,7 @@ onUnmounted(() => {
 .fade-leave-active {
   transition: opacity 0.3s ease;
 }
+
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
@@ -651,21 +730,26 @@ onUnmounted(() => {
   .personnel-hero {
     height: 280px;
   }
+
   .hero-title {
     font-size: 1.8rem;
   }
+
   .featured-card {
     flex-direction: column;
     text-align: center;
     padding: 36px 28px;
     gap: 28px;
   }
+
   .featured-info {
     align-items: center;
   }
+
   .featured-badge {
     align-self: center;
   }
+
   .staff-grid {
     grid-template-columns: 1fr;
   }
