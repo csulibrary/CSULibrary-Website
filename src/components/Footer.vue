@@ -61,7 +61,7 @@
             @click="$router.push('/developers')"
             class="mt-4 w-full py-2 px-4 rounded-xl border border-[#f9dc07]/30 bg-[#f9dc07] text-[#05141c] text-[11px] font-bold uppercase tracking-widest hover:bg-transparent hover:text-[#f9dc07] transition-all"
           >
-            CSU-Library Developers
+            Web Developers
           </button>
         </div>
 
