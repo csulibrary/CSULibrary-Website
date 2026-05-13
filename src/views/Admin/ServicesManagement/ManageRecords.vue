@@ -87,7 +87,7 @@
             <div
               v-for="(record, index) in records"
               :key="record.id"
-              class="manage-card bg-white border border-[#0d2b0f]/8 shadow-sm overflow-hidden"
+              class="manage-card w-full bg-white border border-[#0d2b0f]/8 shadow-sm overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:scale-[1.01] hover:shadow-2xl hover:border-[#0d2b0f]/20"
               :style="`animation-delay: ${0.1 + index * 0.08}s`"
             >
               <!-- Card Header -->
@@ -1032,7 +1032,7 @@ async function saveRecord(record: RecordItem) {
       description: record.draft.description.trim(),
       url: record.draft.url.trim(),
     })
-    // Merge updated fields back, preserve UI-only state
+   
     record.title = updated.title
     record.button_label = updated.button_label
     record.description = updated.description
@@ -1270,14 +1270,14 @@ function confirmIconSelection() {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 0.65rem;
+  font-size: 0.70rem;
   font-weight: 800;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: #fff;
   background: #0d2b0f;
-  padding: 8px 18px;
-  border-radius: 3px;
+  padding: 12px 18px;
+  border-radius: 10px;
   border: none;
   cursor: pointer;
   white-space: nowrap;
@@ -1421,15 +1421,20 @@ function confirmIconSelection() {
 /* ── Content area ── */
 .page-content {
   padding: 36px 40px 80px;
-  max-width: 1100px;
+  /* max-width: 1100px; */
 }
 
 /* ── Cards ── */
 .manage-card {
-  border-radius: 4px;
+  border-radius: 10px;
   opacity: 0;
   animation: fadeUp 0.45s ease forwards;
 }
+
+.manage-card:hover {
+  transform: scale(1.5);
+}
+
 @keyframes fadeUp {
   from {
     opacity: 0;

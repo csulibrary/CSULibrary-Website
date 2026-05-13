@@ -677,7 +677,7 @@ onBeforeUnmount(() => {
 .overview-shell {
   position: relative;
   z-index: 0;
-  padding: 2rem;
+  /* padding: 2rem; */
 }
 
 .overview-kpis {
