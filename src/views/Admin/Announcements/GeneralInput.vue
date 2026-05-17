@@ -428,7 +428,6 @@ const submitForm = async () => {
       title: formData.value.title.trim(),
       content: formData.value.description.trim(),
       image_url: imageUrl,
-      event_id: null,
       created_at: createdAt,
     }
 
