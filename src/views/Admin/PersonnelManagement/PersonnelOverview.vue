@@ -53,9 +53,12 @@
                   style="background-color: #0d2b0f; border-color: #66bb6a"
                 ></div>
                 <img
-                  :src="featuredStaff.image_url || defaultAvatar"
+                  :src="optimizeStorageImageUrl(featuredStaff.image_url || defaultAvatar, { width: 600, quality: 75 })"
                   :alt="fullName(featuredStaff)"
                   class="featured-photo"
+                  loading="eager"
+                  fetchpriority="high"
+                  decoding="async"
                 />
                 <template v-if="isAdmin">
                   <label
@@ -184,9 +187,11 @@
                   style="background-color: #0d2b0f; border-color: #66bb6a"
                 ></div>
                 <img
-                  :src="person.image_url || defaultAvatar"
+                  :src="optimizeStorageImageUrl(person.image_url || defaultAvatar, { width: 360, quality: 72 })"
                   :alt="fullName(person)"
                   class="staff-photo"
+                  loading="lazy"
+                  decoding="async"
                 />
                 <template v-if="isAdmin">
                   <label class="photo-overlay" :for="`photo-${person.id}`" title="Change photo">
@@ -512,6 +517,7 @@ import { ref, computed, onMounted, onUnmounted } from 'vue'
 import Sidebar from '@/components/Sidebar.vue'
 import { supabase } from '@/lib/supabase'
 import { personnelService } from '@/services/personnelService'
+import { optimizeStorageImageUrl } from '@/utils/storageImage'
 
 interface PersonnelRow {
   id: string

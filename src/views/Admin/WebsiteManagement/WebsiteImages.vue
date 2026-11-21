@@ -2,6 +2,7 @@
 import Sidebar from '@/components/Sidebar.vue'
 import { computed, ref, onMounted } from 'vue'
 import { Files, Image as ImageIcon, Video } from 'lucide-vue-next'
+import { optimizeStorageImageUrl } from '@/utils/storageImage'
 
 import {
   getAllWebsiteImages,
@@ -797,13 +798,17 @@ const totalVideos = computed(() => items.value.filter((item) => item.type === 'v
                     <div class="wm-thumb">
                       <img
                         v-if="item.type === 'image'"
-                        :src="item.src || item.thumbnail"
+                        :src="optimizeStorageImageUrl(item.src || item.thumbnail, { width: 220, quality: 70 })"
                         :alt="item.title"
+                        loading="lazy"
+                        decoding="async"
                       />
                       <img
                         v-else-if="item.thumbnail"
-                        :src="item.thumbnail"
+                        :src="optimizeStorageImageUrl(item.thumbnail, { width: 220, quality: 70 })"
                         :alt="item.title"
+                        loading="lazy"
+                        decoding="async"
                       />
                       <video
                         v-else
@@ -847,9 +852,10 @@ const totalVideos = computed(() => items.value.filter((item) => item.type === 'v
               <div v-if="selectedItem" class="wm-preview">
                 <img
                   v-if="selectedItem.type === 'image'"
-                  :src="selectedItem.src || selectedItem.thumbnail"
+                  :src="optimizeStorageImageUrl(selectedItem.src || selectedItem.thumbnail, { width: 1200, quality: 80 })"
                   :alt="selectedItem.title"
                   class="wm-preview-media"
+                  decoding="async"
                 />
 
                 <div v-else class="wm-video-preview">
@@ -973,16 +979,18 @@ const totalVideos = computed(() => items.value.filter((item) => item.type === 'v
               <div class="wm-current-preview">
                 <img
                   v-if="form.type === 'image' && currentFormPreview"
-                  :src="currentFormPreview"
+                  :src="optimizeStorageImageUrl(currentFormPreview, { width: 1000, quality: 78 })"
                   alt="Preview"
                   class="wm-current-preview-img"
+                  decoding="async"
                 />
 
                 <img
                   v-else-if="form.type === 'video' && currentFormPreview"
-                  :src="currentFormPreview"
+                  :src="optimizeStorageImageUrl(currentFormPreview, { width: 1000, quality: 78 })"
                   alt="Video Thumbnail"
                   class="wm-current-preview-img"
+                  decoding="async"
                 />
 
                 <iframe

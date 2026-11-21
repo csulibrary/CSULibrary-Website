@@ -9,10 +9,13 @@
         <div v-for="(media, index) in carouselItems" :key="media.id || index" class="min-w-full max-w-full">
           <img
             v-if="media.type === 'image'"
-            :src="media.src"
+            :src="optimizeStorageImageUrl(media.src, { width: 1600, quality: 75 })"
             :alt="media.alt"
             class="w-full max-w-full object-cover"
             :style="{ height: imageHeight }"
+            :loading="index === currentIndex ? 'eager' : 'lazy'"
+            decoding="async"
+            :fetchpriority="index === currentIndex ? 'high' : 'auto'"
             @error="handleImageError($event, carouselFallbackImage)"
           />
           <video
@@ -126,7 +129,7 @@
     <div
       class="w-full max-w-full flex justify-center py-10 sm:py-12 px-4 sm:px-6 mt-8 relative overflow-hidden"
       :style="{
-        backgroundImage: `url(${libraryBgImage})`,
+        backgroundImage: `url(${optimizeStorageImageUrl(libraryBgImage, { width: 1000, quality: 70 })})`,
         backgroundRepeat: 'repeat',
         backgroundSize: '500px auto',
       }"
@@ -136,9 +139,11 @@
       <div class="w-full max-w-full mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 items-center relative z-10">
         <div class="sr-left w-full h-full flex justify-center">
           <img
-            :src="libraryMainImage"
+            :src="optimizeStorageImageUrl(libraryMainImage, { width: 1000, quality: 75 })"
             alt="Students"
             class="w-full h-full object-cover rounded-sm"
+            loading="lazy"
+            decoding="async"
             @error="handleImageError($event, photo2)"
           />
         </div>
@@ -238,9 +243,11 @@
             "
           >
             <img
-              :src="rldImage1"
+              :src="optimizeStorageImageUrl(rldImage1, { width: 640, quality: 72 })"
               alt="Read"
               class="rld-img absolute inset-0 w-full h-full object-cover"
+              loading="lazy"
+              decoding="async"
               style="transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)"
             />
 
@@ -362,9 +369,11 @@
             "
           >
             <img
-              :src="rldImage2"
+              :src="optimizeStorageImageUrl(rldImage2, { width: 640, quality: 72 })"
               alt="Learn"
               class="rld-img absolute inset-0 w-full h-full object-cover"
+              loading="lazy"
+              decoding="async"
               style="transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)"
             />
 
@@ -490,9 +499,11 @@
             "
           >
             <img
-              :src="rldImage3"
+              :src="optimizeStorageImageUrl(rldImage3, { width: 640, quality: 72 })"
               alt="Discover"
               class="rld-img absolute inset-0 w-full h-full object-cover"
+              loading="lazy"
+              decoding="async"
               style="transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)"
             />
 
@@ -686,9 +697,11 @@
           >
             <div class="relative overflow-hidden" style="height: 220px">
               <img
-                :src="safeSrc(announcement.image_url, card1)"
+                :src="optimizeStorageImageUrl(safeSrc(announcement.image_url, card1), { width: 600, quality: 72 })"
                 :alt="announcement.title"
                 class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                loading="lazy"
+                decoding="async"
               />
 
               <div
@@ -794,7 +807,7 @@
             style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.08)"
           >
             <div class="flex-shrink-0 rounded-xl overflow-hidden" style="width: 72px; height: 72px; background: white">
-              <img :src="usefulImage1" alt="E-Lib" class="w-full h-full object-cover" @error="handleImageError($event, eLib)" />
+              <img :src="optimizeStorageImageUrl(usefulImage1, { width: 160, quality: 70 })" alt="E-Lib" class="w-full h-full object-cover" loading="lazy" decoding="async" @error="handleImageError($event, eLib)" />
             </div>
 
             <div class="flex-1 min-w-0">
@@ -818,7 +831,7 @@
             style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.08)"
           >
             <div class="flex-shrink-0 rounded-xl overflow-hidden flex items-center justify-center" style="width: 72px; height: 72px; background: white">
-              <img :src="usefulImage2" alt="CARSU" class="w-14 h-14 object-contain" @error="handleImageError($event, '/csu-logo.png')" />
+              <img :src="optimizeStorageImageUrl(usefulImage2, { width: 160, quality: 70 })" alt="CARSU" class="w-14 h-14 object-contain" loading="lazy" decoding="async" @error="handleImageError($event, '/csu-logo.png')" />
             </div>
 
             <div class="flex-1 min-w-0">
@@ -842,7 +855,7 @@
             style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.08)"
           >
             <div class="flex-shrink-0 rounded-xl overflow-hidden" style="width: 72px; height: 72px; background: white">
-              <img :src="usefulImage3" alt="OPAC" class="w-full h-full object-cover" @error="handleImageError($event, opac)" />
+              <img :src="optimizeStorageImageUrl(usefulImage3, { width: 160, quality: 70 })" alt="OPAC" class="w-full h-full object-cover" loading="lazy" decoding="async" @error="handleImageError($event, opac)" />
             </div>
 
             <div class="flex-1 min-w-0">
@@ -866,7 +879,7 @@
             style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.08)"
           >
             <div class="flex-shrink-0 rounded-xl overflow-hidden" style="width: 72px; height: 72px; background: white">
-              <img :src="usefulImage4" alt="Free Journals" class="w-full h-full object-cover" @error="handleImageError($event, freeJournals)" />
+              <img :src="optimizeStorageImageUrl(usefulImage4, { width: 160, quality: 70 })" alt="Free Journals" class="w-full h-full object-cover" loading="lazy" decoding="async" @error="handleImageError($event, freeJournals)" />
             </div>
 
             <div class="flex-1 min-w-0">
@@ -890,7 +903,7 @@
             style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.08)"
           >
             <div class="flex-shrink-0 rounded-xl overflow-hidden" style="width: 72px; height: 72px; background: white">
-              <img :src="usefulImage5" alt="Infotrac" class="w-full h-full object-cover" @error="handleImageError($event, gale)" />
+              <img :src="optimizeStorageImageUrl(usefulImage5, { width: 160, quality: 70 })" alt="Infotrac" class="w-full h-full object-cover" loading="lazy" decoding="async" @error="handleImageError($event, gale)" />
             </div>
 
             <div class="flex-1 min-w-0">
@@ -914,7 +927,7 @@
             style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.08)"
           >
             <div class="flex-shrink-0 rounded-xl overflow-hidden flex items-center justify-center" style="width: 72px; height: 72px; background: white">
-              <img :src="usefulImage6" alt="EBSCO" class="w-full h-full object-contain p-1" @error="handleImageError($event, ebsco)" />
+              <img :src="optimizeStorageImageUrl(usefulImage6, { width: 160, quality: 70 })" alt="EBSCO" class="w-full h-full object-contain p-1" loading="lazy" decoding="async" @error="handleImageError($event, ebsco)" />
             </div>
 
             <div class="flex-1 min-w-0">
@@ -976,10 +989,13 @@
           >
             <div class="relative overflow-hidden" style="aspect-ratio: 16/9">
               <template v-if="feature.type === 'video'">
-                <div
-                  class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
-                  :style="{ backgroundImage: `url('${getFeatureThumbnail(feature)}')` }"
-                ></div>
+                <img
+                  :src="optimizeStorageImageUrl(getFeatureThumbnail(feature), { width: 1000, quality: 75 })"
+                  alt=""
+                  class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  loading="lazy"
+                  decoding="async"
+                />
 
                 <div class="absolute inset-0" style="background: linear-gradient(to top, rgba(0, 0, 0, 0.5) 0%, transparent 35%)"></div>
 
@@ -1021,10 +1037,13 @@
               </template>
 
               <template v-else>
-                <div
-                  class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
-                  :style="{ backgroundImage: `url('${feature.src}')` }"
-                ></div>
+                <img
+                  :src="optimizeStorageImageUrl(feature.src, { width: 1000, quality: 75 })"
+                  :alt="feature.title"
+                  class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  loading="lazy"
+                  decoding="async"
+                />
                 <div class="absolute inset-0" style="background: linear-gradient(to top, rgba(0, 0, 0, 0.45) 0%, transparent 35%)"></div>
               </template>
             </div>
@@ -1092,7 +1111,7 @@
         <video
           v-else-if="activeFeatureModal.type === 'video'"
           class="w-full h-full"
-          :src="activeFeatureModal.src"
+          :src="optimizeStorageImageUrl(activeFeatureModal.src, { width: 1400, quality: 80 })"
           controls
           autoplay
         ></video>
@@ -1127,6 +1146,7 @@
 import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { getImagesByPage } from '@/services/websiteImageService'
 import { supabase } from '@/lib/supabase'
+import { optimizeStorageImageUrl } from '@/utils/storageImage'
 
 // import photo1 from '@/assets/images/img.jpg'
 import photo2 from '@/assets/images/lib.jpg'

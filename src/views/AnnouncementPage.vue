@@ -17,8 +17,10 @@
             >
               <div class="md:w-1/2 h-64 md:h-auto overflow-hidden">
                 <img
-                  :src="event.image"
+                  :src="optimizeStorageImageUrl(event.image, { width: 1000, quality: 75 })"
                   class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                  loading="lazy"
+                  decoding="async"
                 />
               </div>
               <div class="md:w-1/2 p-10 flex flex-col justify-center space-y-4">
@@ -72,9 +74,11 @@
             >
               <img
                 v-if="announcement.image_url"
-                :src="announcement.image_url"
+                :src="optimizeStorageImageUrl(announcement.image_url, { width: 640, quality: 72 })"
                 :alt="announcement.title"
                 class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                loading="lazy"
+                decoding="async"
               />
               <div v-else class="w-full h-full bg-gradient-to-br from-[#f1f6f1] to-[#dce8de]"></div>
 
@@ -129,9 +133,11 @@
             >
               <img
                 v-if="announcement.image_url"
-                :src="announcement.image_url"
+                :src="optimizeStorageImageUrl(announcement.image_url, { width: 640, quality: 72 })"
                 :alt="announcement.headline"
                 class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                loading="lazy"
+                decoding="async"
               />
               <div v-else class="w-full h-full bg-gradient-to-br from-[#eef4ff] to-[#dbe7ff]"></div>
 
@@ -184,9 +190,10 @@
 
           <img
             v-if="activePreview.imageUrl"
-            :src="activePreview.imageUrl"
+            :src="optimizeStorageImageUrl(activePreview.imageUrl, { width: 1200, quality: 80 })"
             :alt="activePreview.title"
             class="preview-image"
+            decoding="async"
           />
 
           <p v-if="activePreview.location" class="preview-extra">
@@ -228,6 +235,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { supabase } from '@/lib/supabase'
+import { optimizeStorageImageUrl } from '@/utils/storageImage'
 
 type PreviewItem = {
   title: string

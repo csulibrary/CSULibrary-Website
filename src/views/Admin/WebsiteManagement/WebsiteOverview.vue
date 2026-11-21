@@ -71,8 +71,10 @@
                 <div v-for="slide in carouselImages" :key="slide.id"
                   class="flex items-center gap-6 bg-gray-50 p-6 rounded-2xl border hover:shadow-md transition group">
                   <div class="w-40 h-24 bg-gray-200 rounded-xl overflow-hidden relative">
-                    <img :src="slide.image_url || slide.thumbnail_url"
+                    <img :src="optimizeStorageImageUrl(slide.image_url || slide.thumbnail_url, { width: 360, quality: 72 })"
                       class="w-full h-full object-cover opacity-0 transition-opacity duration-700"
+                      loading="lazy"
+                      decoding="async"
                       @load="(e) => (e.target as HTMLImageElement).style.opacity = '1'" />
                   </div>
                   <div class="flex-1">
@@ -102,8 +104,10 @@
               <template v-else>
                 <div v-for="card in featureCards" :key="card.id"
                   class="aspect-[4/5] bg-gray-50 border-2 border-dashed rounded-3xl overflow-hidden relative group">
-                  <img :src="card.image_url || card.thumbnail_url"
+                  <img :src="optimizeStorageImageUrl(card.image_url || card.thumbnail_url, { width: 480, quality: 72 })"
                     class="w-full h-full object-cover opacity-0 transition-opacity duration-700"
+                    loading="lazy"
+                    decoding="async"
                     @load="(e) => (e.target as HTMLImageElement).style.opacity = '1'" />
                   <div class="absolute top-2 right-2">
                     <button @click.stop="goToEditor(card.title, card.image_url)"
@@ -147,6 +151,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import Sidebar from '@/components/Sidebar.vue'
 import { getAllWebsiteImages } from '@/services/websiteImageService'
+import { optimizeStorageImageUrl } from '@/utils/storageImage'
 
 const router = useRouter()
 const activeSection = ref('carousel')

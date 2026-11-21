@@ -150,20 +150,19 @@
                   v-for="(section, idx) in wing.sections"
                   :key="section.id || idx"
                   class="group relative h-96 rounded-2xl overflow-hidden shadow-xl transition-all duration-500 bg-gray-100 border-2 cursor-pointer border-transparent hover:-translate-y-3"
-                  :style="
-                    section.images.length > 0
-                      ? {
-                          backgroundImage: `url('${section.images[0]}')`,
-                          backgroundSize: 'cover',
-                          backgroundPosition: 'center',
-                          transitionDelay: `${(idx % 4) * 0.08}s`,
-                        }
-                      : { transitionDelay: `${(idx % 4) * 0.08}s` }
-                  "
+                  :style="{ transitionDelay: `${(idx % 4) * 0.08}s` }"
                   @click="openViewer(section)"
                   @mouseenter="startCarousel(section)"
                   @mouseleave="stopCarousel(section)"
                 >
+                  <img
+                    v-if="section.images.length"
+                    :src="optimizeStorageImageUrl(section.images[0], { width: 720, quality: 72 })"
+                    alt=""
+                    class="absolute inset-0 w-full h-full object-cover"
+                    loading="lazy"
+                    decoding="async"
+                  />
                   <div
                     class="absolute inset-0 bg-linear-to-t from-black/90 via-black/20 to-transparent group-hover:from-[#1b5e20]/95 transition-all duration-500"
                   ></div>
@@ -399,7 +398,12 @@
                   :class="{ 'ptile--cover': i === 0 }"
                   @click="previewImg = img"
                 >
-                  <img :src="img" :alt="`Photo ${i + 1}`" />
+                  <img
+                    :src="optimizeStorageImageUrl(img, { width: 240, quality: 70 })"
+                    :alt="`Photo ${i + 1}`"
+                    loading="lazy"
+                    decoding="async"
+                  />
                   <div class="ptile-over">
                     <span v-if="i === 0" class="cover-badge">Cover</span>
                     <div class="ptile-btns">
@@ -475,7 +479,7 @@
       ============================= -->
       <Transition name="fade">
         <div v-if="previewImg" class="lightbox-bg" @click="previewImg = null">
-          <img :src="previewImg" class="lightbox-img" @click.stop />
+          <img :src="optimizeStorageImageUrl(previewImg, { width: 1400, quality: 80 })" class="lightbox-img" decoding="async" @click.stop />
           <button class="lightbox-close" @click="previewImg = null">
             <svg
               width="18"
@@ -529,6 +533,7 @@ import Sidebar from '@/components/Sidebar.vue'
 import '@/assets/styles/manage-gallery.css'
 
 import { supabase } from '@/lib/supabase'
+import { optimizeStorageImageUrl } from '@/utils/storageImage'
 import {
   getGallerySections,
   createGallerySection,

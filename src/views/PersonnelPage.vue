@@ -41,9 +41,12 @@
                 style="background-color: #003300; border-color: #009900"
               ></div>
               <img
-                :src="featuredStaff.image_url || defaultAvatar"
+                :src="optimizeStorageImageUrl(featuredStaff.image_url || defaultAvatar, { width: 600, quality: 75 })"
                 :alt="fullName(featuredStaff)"
                 class="featured-photo"
+                loading="eager"
+                fetchpriority="high"
+                decoding="async"
               />
             </div>
 
@@ -79,9 +82,11 @@
                 style="background-color: #003300; border-color: #009900"
               ></div>
               <img
-                :src="person.image_url || defaultAvatar"
+                :src="optimizeStorageImageUrl(person.image_url || defaultAvatar, { width: 360, quality: 72 })"
                 :alt="fullName(person)"
                 class="staff-photo"
+                loading="lazy"
+                decoding="async"
               />
             </div>
 
@@ -133,6 +138,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { personnelService } from '@/services/personnelService'
+import { optimizeStorageImageUrl } from '@/utils/storageImage'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface PersonnelRow {

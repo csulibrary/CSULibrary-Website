@@ -159,13 +159,14 @@
                   @mouseleave="stopCarousel(section)"
                   class="sr-item group relative h-[280px] sm:h-80 lg:h-96 rounded-2xl overflow-hidden cursor-pointer shadow-xl transition-all duration-500 hover:-translate-y-2 lg:hover:-translate-y-3 bg-gray-100"
                 >
-                  <div
-                    class="absolute inset-0 transition-opacity duration-700 bg-cover bg-center"
-                    :style="{
-                      backgroundImage:
-                        section.images.length > 0 ? `url('${section.images[0]}')` : 'none',
-                    }"
-                  ></div>
+                  <img
+                    v-if="section.images.length"
+                    :src="optimizeStorageImageUrl(section.images[0], { width: 720, quality: 72 })"
+                    alt=""
+                    class="absolute inset-0 w-full h-full object-cover transition-opacity duration-700"
+                    loading="lazy"
+                    decoding="async"
+                  />
 
                   <div
                     class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/25 to-transparent group-hover:from-[#1b5e20]/95 transition-all duration-500"
@@ -258,9 +259,10 @@
 
             <img
               v-if="selectedSection.images.length > 0"
-              :src="selectedSection.images[currentImgIndex]"
+              :src="optimizeStorageImageUrl(selectedSection.images[currentImgIndex], { width: 1400, quality: 80 })"
               :alt="selectedSection.title"
               class="w-full h-full object-contain"
+              decoding="async"
             />
 
             <div
@@ -317,9 +319,11 @@
                 "
               >
                 <img
-                  :src="img"
+                  :src="optimizeStorageImageUrl(img, { width: 240, quality: 70 })"
                   :alt="`${selectedSection.title} ${idx + 1}`"
                   class="w-full h-full object-cover"
+                  loading="lazy"
+                  decoding="async"
                 />
               </div>
             </div>
@@ -333,6 +337,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { getGallerySectionsWithImages } from '@/services/manageGallery'
+import { optimizeStorageImageUrl } from '@/utils/storageImage'
 
 /* =====================================================
   TYPES & STATE

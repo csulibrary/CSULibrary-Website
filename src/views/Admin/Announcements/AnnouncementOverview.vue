@@ -134,7 +134,7 @@
                   class="row-thumb-wrap"
                   @click="openGeneralPreview(announcement)"
                 >
-                  <img :src="announcement.image_url" class="row-thumb" />
+                  <img :src="optimizeStorageImageUrl(announcement.image_url, { width: 240, quality: 70 })" class="row-thumb" loading="lazy" decoding="async" />
                 </div>
                 <div
                   v-else
@@ -215,7 +215,7 @@
                   class="row-thumb-wrap"
                   @click="openNewsPreview(announcement)"
                 >
-                  <img :src="announcement.image_url" class="row-thumb" />
+                  <img :src="optimizeStorageImageUrl(announcement.image_url, { width: 240, quality: 70 })" class="row-thumb" loading="lazy" decoding="async" />
                 </div>
                 <div
                   v-else
@@ -319,8 +319,9 @@
 
           <img
             v-if="activePreview.imageUrl"
-            :src="activePreview.imageUrl"
+            :src="optimizeStorageImageUrl(activePreview.imageUrl, { width: 1200, quality: 80 })"
             class="news-preview-image"
+            decoding="async"
           />
 
           <p v-if="activePreview.location" class="news-preview-extra">
@@ -352,6 +353,7 @@
 import { computed, reactive, ref, onMounted, onBeforeUnmount } from 'vue'
 import Sidebar from '@/components/Sidebar.vue'
 import { supabase } from '@/lib/supabase'
+import { optimizeStorageImageUrl } from '@/utils/storageImage'
 
 
 interface GeneralAnnouncement {

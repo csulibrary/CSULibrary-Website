@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, type DirectiveBinding } from 'vue'
 import { supabase } from '@/lib/supabase'
+import { optimizeStorageImageUrl } from '@/utils/storageImage'
 
 type MediaType = 'image' | 'video'
 type PageType = 'homepage' | 'aboutpage'
@@ -284,7 +285,7 @@ onBeforeUnmount(() => {
 
     <div class="hero-bleed" v-reveal="80">
       <div class="hero-wrap hero-overlay">
-        <img :src="heroImageSrc" alt="CSU Library" class="hero-img" loading="lazy" />
+        <img :src="optimizeStorageImageUrl(heroImageSrc, { width: 1400, quality: 75 })" alt="CSU Library" class="hero-img" fetchpriority="high" decoding="async" />
       </div>
     </div>
 
@@ -309,7 +310,7 @@ onBeforeUnmount(() => {
       <div class="page-inner" v-reveal>
         <div class="icon-wrap icon-mt">
           <div class="icon-pill" v-for="icon in iconMedia" :key="icon.id">
-            <img :src="icon.src" :alt="icon.title" class="gif-icon" loading="lazy" />
+            <img :src="icon.src" :alt="icon.title" class="gif-icon" loading="lazy" decoding="async" />
             <span>{{ icon.title.replace(' Icon', '') }}</span>
           </div>
         </div>
