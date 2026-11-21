@@ -1128,7 +1128,7 @@ import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { getImagesByPage } from '@/services/websiteImageService'
 import { supabase } from '@/lib/supabase'
 
-// import photo1 from '@/assets/images/img.jpg'
+// import photo1 from '@/assets/images/img.jpg' HELLO
 import photo2 from '@/assets/images/lib.jpg'
 import photo3 from '@/assets/images/img1.jpg'
 import photo4 from '@/assets/images/img2.jpg'
